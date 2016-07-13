@@ -20,7 +20,6 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:23.0.1'
-    compile 'com.specyci:residemenu:1.6+'
-
-
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('/home/christian/GIT/Android/CircleLauncher3D/libs/nineoldandroids-2.4.0.jar')
 }
