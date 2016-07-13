@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.special.ResideMenu.ResideMenu;
+
 import cruga.team.clases.App;
 import cruga.team.framework.widget.CircleMenu;
 import cruga.team.launcher_play.MainActivity;
@@ -21,6 +23,8 @@ import cruga.team.launcher_play.R;
 public class HomeFragment extends Fragment {
 
     ViewGroup rootView;
+    private View parentView;
+    private ResideMenu resideMenu;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,11 +53,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "click center", Toast.LENGTH_SHORT).show();
+                MainActivity parentActivity = (MainActivity) getActivity();
 
-
-                AppsFragment appsFragment = new AppsFragment();
-                getFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, appsFragment).addToBackStack(null).commit();
+                resideMenu = parentActivity.getResideMenu();
+                resideMenu.openMenu(ResideMenu.DIRECTION_LEFT);
             }
         });
         getActivity().setTitle(getResources().getString(R.string.app_name));
