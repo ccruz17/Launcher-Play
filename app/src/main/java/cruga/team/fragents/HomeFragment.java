@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import cruga.team.ResideMenu.ResideMenu;
@@ -51,12 +52,16 @@ public class HomeFragment extends Fragment {
         Log.i("MyCCG", circleMenu.getSelectedItem().getPosition() + "");
         Log.i("MyCCG", circleMenu.getSelectedItem().getIdx() + "");
 
+        MainActivity parentActivity = (MainActivity)getActivity();
+        resideMenu = parentActivity.getResideMenu();
+
+        FrameLayout ignored_view = (FrameLayout) rootView.findViewById(R.id.fragment_ignore);
+        resideMenu.addIgnoredView(ignored_view);
+
         rootView.findViewById(R.id.circle_menu_center).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "click center", Toast.LENGTH_SHORT).show();
                 MainActivity parentActivity = (MainActivity) getActivity();
-
                 resideMenu = parentActivity.getResideMenu();
                 resideMenu.openMenu(ResideMenu.DIRECTION_LEFT);
             }
