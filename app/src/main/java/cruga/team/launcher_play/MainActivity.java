@@ -7,10 +7,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import com.special.ResideMenu.ResideMenu;
-import com.special.ResideMenu.ResideMenuItem;
+import cruga.team.ResideMenu.IconClickListener;
+import cruga.team.ResideMenu.ResideMenu;
+import cruga.team.ResideMenu.ResideMenuItem;
 
 import java.util.ArrayList;
 
@@ -18,9 +20,17 @@ import cruga.team.clases.App;
 import cruga.team.clases.Tools;
 import cruga.team.fragents.HomeFragment;
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
+public class MainActivity extends FragmentActivity {
 
+    //FINAL VARS
+    public static final String PREF_CUSTOM_APPS = "pref_custom_apps";
+    public static final String PREF_MAX_APPS = "pref_max_apps";
+    //END FINAL
+    //DEFAULT VARS FOR APP
+    public static final int DEF_MAX_APPS = 7;
+    //END DEFAULT VARS FOR APP
     public static ArrayList<App> allApps = null;
+    public static ArrayList<App> customApps = null;
     private ResideMenu resideMenu;
 
     @Override
@@ -42,32 +52,29 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         // attach to current activity;
         resideMenu = new ResideMenu(this);
-        resideMenu.setBackground(R.drawable.shadow);
+        resideMenu.setBackground(R.drawable.menu_background);
         resideMenu.attachToActivity(this);
-        resideMenu.setScaleValue(0.5f);
+        resideMenu.setScaleValue(0.7f);
+        resideMenu.setUse3D(true);
         resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
-        resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_LEFT);
+       // resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_LEFT);
 
         final PackageManager pm = getPackageManager();
         //get a list of installed apps.
         allApps = Tools.obtenerApps(pm);
+        customApps = Tools.obtenerCustomApps(this);
 
         // create menu items;
         for (int i = 0; i < allApps.size(); i++){
-            ResideMenuItem item = new ResideMenuItem(this, allApps.get(i).id_rcs_icon, allApps.get(i).label);
-            item.setOnClickListener(this);
+            ResideMenuItem item = new ResideMenuItem(this, allApps.get(i).icono, allApps.get(i).label);
+
+            item.setOnClickListener(new IconClickListener(this, allApps.get(i)));
             resideMenu.addMenuItem(item,  ResideMenu.DIRECTION_LEFT); // or  ResideMenu.DIRECTION_RIGHT
 
         }
 
-        
         if( savedInstanceState == null )
             changeFragment(new HomeFragment());
-
-    }
-
-    @Override
-    public void onClick(View v) {
 
     }
 

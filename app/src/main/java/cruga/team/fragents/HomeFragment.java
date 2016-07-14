@@ -4,6 +4,7 @@ package cruga.team.fragents;
  * Created by christian on 12/07/16.
  */
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.special.ResideMenu.ResideMenu;
+import cruga.team.ResideMenu.ResideMenu;
 
 import cruga.team.clases.App;
 import cruga.team.framework.widget.CircleMenu;
@@ -34,15 +35,16 @@ public class HomeFragment extends Fragment {
         final CircleMenu circleMenu = (CircleMenu) rootView.findViewById(R.id.circle_menu_items);
         circleMenu.setRotating(true);//enable rotation
         circleMenu.setFirstChildPosition(CircleMenu.FirstChildLocation.North);
-        circleMenu.setItems(MainActivity.allApps, 7);//pass items and number of visibles iteams
+        circleMenu.setItems(MainActivity.customApps, MainActivity.DEF_MAX_APPS);//pass items and number of visibles iteams
         circleMenu.setIconSize(60);//set uicon size
         circleMenu.setOnItemClickListener(new CircleMenu.OnItemClickListener() {
             @Override
             public void onItemClick(CircleMenu.ItemView view) {
 
-                App currentApp  = MainActivity.allApps.get(view.getIdx());
-                Intent launchIntent = getActivity().getPackageManager().getLaunchIntentForPackage(currentApp.packageName);
-                startActivity(launchIntent);
+                App currentApp  = MainActivity.customApps.get(view.getIdx());
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName(currentApp.packageName, currentApp.activity));
+                getActivity().startActivity(intent);
             }
         });
 

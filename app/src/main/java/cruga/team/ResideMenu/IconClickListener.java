@@ -1,6 +1,7 @@
 package cruga.team.ResideMenu;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +22,8 @@ public class IconClickListener implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Intent launchIntent = act.getPackageManager().getLaunchIntentForPackage(app.packageName);
-        act.startActivity(launchIntent);
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(app.packageName, app.activity));
+        act.startActivity(intent);
     }
 }
