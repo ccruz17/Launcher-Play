@@ -120,6 +120,7 @@ public class ResideMenu extends FrameLayout {
         RelativeLayout menuHolder = (RelativeLayout) findViewById(R.id.sv_menu_holder);
         menuHolder.addView(scrollViewLeftMenu);
         menuHolder.addView(scrollViewRightMenu);
+        setShadowVisible(false);
     }
 
     /**
@@ -341,6 +342,7 @@ public class ResideMenu extends FrameLayout {
     public void openMenu(int direction) {
 
         setScaleDirection(direction);
+        setShadowVisible(true);
 
         isOpened = true;
         AnimatorSet scaleDown_activity = buildScaleDownAnimation(viewActivity, mScaleValue, mScaleValue);
@@ -358,6 +360,7 @@ public class ResideMenu extends FrameLayout {
      */
     public void closeMenu() {
 
+        setShadowVisible(false);
         isOpened = false;
         AnimatorSet scaleUp_activity = buildScaleUpAnimation(viewActivity, 1.0f, 1.0f);
         AnimatorSet scaleUp_shadow = buildScaleUpAnimation(imageViewShadow, 1.0f, 1.0f);
