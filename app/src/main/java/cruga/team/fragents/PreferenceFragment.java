@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.gc.materialdesign.views.Switch;
+import com.rey.material.widget.Switch;
 
+import cruga.team.CircleMenu.CircleMenu;
 import cruga.team.ResideMenu.ResideMenu;
+import cruga.team.clases.Tools;
 import cruga.team.launcher_play.MainActivity;
 import cruga.team.launcher_play.R;
 
@@ -20,6 +22,7 @@ public class PreferenceFragment extends Fragment {
 
     ViewGroup rootView;
     ResideMenu resideMenu;
+    CircleMenu circleMenu;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,37 +30,60 @@ public class PreferenceFragment extends Fragment {
 
         MainActivity parentActivity = (MainActivity)getActivity();
         resideMenu = parentActivity.getResideMenu();
+        circleMenu = parentActivity.getCircleMenu();
+
 
         Switch switch3d = (Switch) rootView.findViewById(R.id.switch_3d);
         Switch switchRotating = (Switch)rootView.findViewById(R.id.switch_rotating);
 
-        switch3d.setOncheckListener(new Switch.OnCheckListener() {
+        switch3d.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
             @Override
-            public void onCheck(Switch view, boolean check) {
-                if(check) {
-                    resideMenu.setUse3D(true);
+            public void onCheckedChanged(Switch view, boolean checked) {
+                if(checked) {
+                    resideMenu.setUse3D(checked);
+                    resideMenu.setScaleValue(0.6f);
+                    Tools.setSharePref(getActivity(), MainActivity.PREF_3D_ANIMATION, "TRUE");
                 } else {
-                    resideMenu.setUse3D(false);
+                    resideMenu.setUse3D(checked);
+                    resideMenu.setScaleValue(0.5f);
+                    Tools.setSharePref(getActivity(), MainActivity.PREF_3D_ANIMATION, "");
                 }
             }
         });
 
-        switchRotating.setOncheckListener(new Switch.OnCheckListener() {
+        switchRotating.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
             @Override
-            public void onCheck(Switch view, boolean check) {
-                if(check) {
-                    Log.i("cRUGA", "A");
+            public void onCheckedChanged(Switch view, boolean checked) {
+                if(checked) {
 
+                    //MainActivity.circleMenu.setRotating(checked);
+                    //circleMenu.setRotating(checked);
+                    Tools.setSharePref(getActivity(), MainActivity.PREF_ROTATION, "TRUE");
+                    Log.i("PREF", "SI" +Tools.getSharePref(getActivity(), MainActivity.PREF_ROTATION));
                 } else {
-                    Log.i("cRUGA", "B");
+                    //MainActivity.circleMenu.setRotating(checked);
+                    //circleMenu.setRotating(checked);
+
+                    Tools.setSharePref(getActivity(), MainActivity.PREF_ROTATION, "");
+                    Log.i("PREF", "NO" + Tools.getSharePref(getActivity(), MainActivity.PREF_ROTATION));
                 }
             }
         });
+
+        if(Tools.getSharePref(getActivity(), MainActivity.PREF_3D_ANIMATION).compareTo("") == 0) {
+            switch3d.setChecked(false);
+        }else {
+            switch3d.setChecked(true);
+        }
+
+        if(Tools.getSharePref(getActivity(), MainActivity.PREF_ROTATION).compareTo("") == 0) {
+            switchRotating.setChecked(false);
+        }else {
+            switchRotating.setChecked(true);
+        }
 
         getActivity().setTitle(MainActivity.TITLE_MENU_SETTINGS);
 
-
-        Log.i("cRUGA", "entro");
         return rootView;
     }
 }

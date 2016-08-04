@@ -1,6 +1,5 @@
 package cruga.team.launcher_play;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,8 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
+import cruga.team.CircleMenu.CircleMenu;
 import cruga.team.fragents.HomeFragment;
 import cruga.team.fragents.PreferenceFragment;
 import cruga.team.listeners.IconClickListener;
@@ -27,37 +26,48 @@ public class MainActivity extends FragmentActivity {
     //FINAL VARS
     public static final String PREF_CUSTOM_APPS = "pref_custom_apps";
     public static final String PREF_MAX_APPS = "pref_max_apps";
+    public static final String PREF_ROTATION = "pref_rotaion";
+    public static final String PREF_3D_ANIMATION = "pref_animation";
 
     public static final String TITLE_MENU_CONFIG = "title_config";
     public static final String TITLE_MENU_SETTINGS = "title_settings";
     public static final String TITLE_HOME = "title_home";
     public static final String TITLE_ALL_APSS = "title_all_apps";
 
-    public static final String SHARE_KEY = "CRUGA";
+    public static final String PREFERENCE_KEY = "CCG_GA";
     //END FINAL
     //DEFAULT VARS FOR APP
     public static final int DEF_MAX_APPS = 7;
+    public static final boolean DEF_ROTATION = true;
+    public static final boolean DEF_3D_ANIMATION = true;
     //END DEFAULT VARS FOR APP
     public static ArrayList<App> allApps = null;
     public static ArrayList<App> customApps = null;
     private ResideMenu resideMenu;
+    public static CircleMenu circleMenu = null;
 
     @Override
     public void onBackPressed() {
         Log.i("CRUGA-", getTitle() + "");
         if(getTitle() == TITLE_MENU_SETTINGS) {
-            super.onBackPressed();
-        }  else if(getTitle() == MainActivity.TITLE_ALL_APSS) {
-           resideMenu.closeMenu();
-       }else if(getTitle() == TITLE_HOME) {
+
+            /*Fragment f = getSupportFragmentManager().findFragmentByTag("SETTINGS");
+            getSupportFragmentManager().beginTransaction().remove(f).commit();
+            */
+            changeFragment(new HomeFragment());
+
+            setTitle(MainActivity.TITLE_HOME);
+        } else if(getTitle() == MainActivity.TITLE_ALL_APSS) {
+            resideMenu.closeMenu();
+        } else if(getTitle() == TITLE_HOME) {
            //Nothing XD CCG
            resideMenu.openMenu(ResideMenu.DIRECTION_LEFT);
            setTitle(MainActivity.TITLE_ALL_APSS);
-       }else if(getTitle() == TITLE_MENU_CONFIG) {
+        } else if(getTitle() == TITLE_MENU_CONFIG) {
            resideMenu.closeMenu();
-       }else {
+        } else {
             super.onBackPressed();
-       }
+        }
     }
 
     @Override
@@ -67,10 +77,16 @@ public class MainActivity extends FragmentActivity {
 
         // attach to current activity;
         resideMenu = new ResideMenu(this);
+        circleMenu = new CircleMenu(this);
         //resideMenu.setBackground(R.drawable.menu_background);
         resideMenu.attachToActivity(this);
-        resideMenu.setScaleValue(0.7f);
-        resideMenu.setUse3D(true);
+        resideMenu.setScaleValue(0.6f);
+
+        if(Tools.getSharePref(this, PREF_3D_ANIMATION).compareTo("") == 0) {
+            resideMenu.setUse3D(false);
+        } else {
+            resideMenu.setUse3D(true);
+        }
 
         final PackageManager pm = getPackageManager();
         //get a list of installed apps.
@@ -83,16 +99,16 @@ public class MainActivity extends FragmentActivity {
 
             item.setOnClickListener(new IconClickListener(this, allApps.get(i)));
             resideMenu.addMenuItem(item,  ResideMenu.DIRECTION_LEFT); // or  ResideMenu.DIRECTION_RIGHT
-
         }
 
         ResideMenuItem settings = new ResideMenuItem(this, R.drawable.ic_settings_white_48dp, getString(R.string.settings));
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .add(R.id.fragment_container, new PreferenceFragment(), "fragment")
+                        .replace(R.id.fragment_container, new PreferenceFragment(), "SETTINGS")
                         .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 resideMenu.closeMenu();
@@ -100,8 +116,9 @@ public class MainActivity extends FragmentActivity {
             }
         });
         resideMenu.addMenuItem(settings, ResideMenu.DIRECTION_RIGHT);
-
         resideMenu.addMenuItem(new ResideMenuItem(this, R.drawable.ic_wallpaper_white_48dp, getString(R.string.wallpaper)), ResideMenu.DIRECTION_RIGHT);
+
+
         resideMenu.setMenuListener(menuListener);
 
 
@@ -111,7 +128,13 @@ public class MainActivity extends FragmentActivity {
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        return resideMenu.dispatchTouchEvent(ev);
+        Log.i("EVENT", "dispatchTouchEvent");
+        if(getTitle() == MainActivity.TITLE_MENU_SETTINGS) {
+            return super.dispatchTouchEvent(ev);
+        }else {
+            return resideMenu.dispatchTouchEvent(ev);
+        }
+
     }
 
     private ResideMenu.OnMenuListener menuListener = new ResideMenu.OnMenuListener() {
@@ -121,8 +144,9 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public void closeMenu() {
-            Log.i("LOG", "title al cerrar" +getTitle());
-            setTitle(MainActivity.TITLE_HOME);
+            if(getTitle() != MainActivity.TITLE_MENU_SETTINGS) {
+                setTitle(MainActivity.TITLE_HOME);
+            }
         }
     };
 
@@ -138,6 +162,11 @@ public class MainActivity extends FragmentActivity {
     // What good method is to access resideMenu？
     public ResideMenu getResideMenu() {
         return resideMenu;
+    }
+     // What good method is to access circleMenu
+
+    public CircleMenu getCircleMenu() {
+        return circleMenu;
     }
 
 }

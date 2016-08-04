@@ -99,10 +99,14 @@ public class Tools {
     }
 
     public static String getSharePref(Activity act, String name) {
-
-        SharedPreferences prefs =  act.getSharedPreferences("LINKBUNCKS_CCG", act.MODE_PRIVATE);
+        SharedPreferences prefs =  act.getSharedPreferences(MainActivity.PREFERENCE_KEY, act.MODE_PRIVATE);
         String pref = prefs.getString(name, "");
         return pref;
+    }
+
+    public static void setSharePref(Activity act, String name, String val) {
+        SharedPreferences prefs =  act.getSharedPreferences(MainActivity.PREFERENCE_KEY, act.MODE_PRIVATE);
+        prefs.edit().putString(name, val).commit();
     }
 
 }

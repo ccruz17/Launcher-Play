@@ -3,6 +3,7 @@ package cruga.team.listeners;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -22,7 +23,7 @@ public class IconClickListener implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setComponent(new ComponentName(app.packageName, app.activity));
         act.startActivity(intent);
     }
