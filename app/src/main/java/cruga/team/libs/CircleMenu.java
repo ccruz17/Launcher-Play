@@ -1,4 +1,4 @@
-package cruga.team.CircleMenu;
+package cruga.team.libs;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -54,6 +54,7 @@ public class CircleMenu extends ViewGroup {
     private int iconSize = 50;//dp
     private int textColor = Color.BLACK;
     private int textSize = 12;//sp
+    private boolean showFont = true;
     // Event listeners
     private OnItemClickListener onItemClickListener = null;
     private OnItemSelectedListener onItemSelectedListener = null;
@@ -137,7 +138,7 @@ public class CircleMenu extends ViewGroup {
 
             if (apps != null) {
                 itemView.setText(currentApp.label);
-                itemView.setTextVisible(true);
+                itemView.setTextVisible(showFont);
                 itemView.setTextColor(textColor);
                 itemView.setTextSize(textSize);
             } else {
@@ -172,6 +173,9 @@ public class CircleMenu extends ViewGroup {
         this.iconSize = iconSize;
     }
 
+    public void setShowFont(boolean show) {
+        this.showFont = show;
+    }
     public boolean isRotating() {
         return isRotating;
     }

@@ -1,6 +1,28 @@
 <resources>
-    <string name="app_name">Circle Launcher</string>
+    <string name="app_name">Launcher Play</string>
     <string name="all_apps">All Apps</string>
     <string name="settings">Settings</string>
     <string name="wallpaper">Wallpaper</string>
+    <string name="coffee">Coffee</string>
+    <string name="a_beer">A Beer</string>
+    <string name="icon_size">Icon size</string>
+    <string name="circle_menu_apps">Circle menu apps</string>
+    <string name="donations">Donations</string>
+    <string name="apps_settings">Apps settings</string>
+    <string name="rotating">Rotating</string>
+    <string name="_3d_animations">3d Animations</string>
+    <string name="general_settings">General settings</string>
+    <string name="show_text_icon">Show text icon</string>
+    <string name="features_for_my_friends">Features for my friends</string>
+    <string name="unlock_premium_features">Unlock premium features</string>
+    <string name="if_you_like_my_app_you_can_try_to_help_this_app_will_never_have_advertising">If you like my app, you can try to help, This app will never have advertising</string>
+    <string name="bus_ticket">Bus ticket</string>
+    <string name="icon_pack">Icon Pack</string>
+    <string name="apply_theme">Apply theme</string>
+
+    <string-array name="icon_size_array">
+        <item>Small</item>
+        <item>Normal</item>
+        <item>Big</item>
+    </string-array>
 </resources>

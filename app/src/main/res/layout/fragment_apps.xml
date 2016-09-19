@@ -3,13 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-       </FrameLayout>
+    android:orientation="vertical"
+    android:background="#000"
+    android:id="@+id/fragment_ignore">
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Select your apps for home screan"
+        android:id="@+id/textView10"
+        android:layout_gravity="center_horizontal"
+        android:padding="5px" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lstApps"
+        android:padding="5px" />
 </LinearLayout>

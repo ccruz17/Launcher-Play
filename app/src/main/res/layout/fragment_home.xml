@@ -3,10 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/fragment_ignore"
-    android:background="@drawable/wallpaper">
+    android:id="@+id/fragment_ignore">
 
-    <cruga.team.CircleMenu.CircleMenu
+    <cruga.team.libs.CircleMenu
         android:id="@+id/circle_menu_items"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

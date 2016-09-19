@@ -1,4 +1,4 @@
-package cruga.team.ResideMenu;
+package cruga.team.libs;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

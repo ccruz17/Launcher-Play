@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="button_flat_color">
+        <item>@style/LightFlatColorButtonRippleStyle</item>
+        <item>@style/DarkFlatColorButtonRippleStyle</item>
+    </array>
+</resources>
