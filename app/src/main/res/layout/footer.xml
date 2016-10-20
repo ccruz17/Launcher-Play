@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/margin"
     android:paddingBottom="@dimen/margin">
 
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/app_name"
+        android:textColor="@color/dialogplus_black_overlay"
+        android:textSize="@dimen/title_text_size"/>
 
-    <com.rey.material.widget.Button
+    <Button
+        android:id="@+id/footer_close_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/apply_theme"
-        android:layout_gravity="center_horizontal"
-        android:background="@null"
-        app:v_styleId="@array/button_flat_color"
-        />
+        android:text="@string/close"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/button_text_size"
+        android:background="@drawable/selector_bg_button"/>
 
 </LinearLayout>

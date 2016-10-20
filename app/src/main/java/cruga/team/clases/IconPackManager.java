@@ -1,5 +1,6 @@
 package cruga.team.clases;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -20,16 +21,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import cruga.team.launcher_play.MainActivity;
+
 public class IconPackManager
 {
     //@Inject
     //private android.app.Application mContext;
 
     private Context mContext;
+    Activity mActivity;
 
     public void setContext (Context c) {
         mContext = c;
     }
+    public void setActivity (Activity mActivity) {
+        this.mActivity = mActivity;
+    }
+
 
     public class IconPack
     {

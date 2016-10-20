@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 
 
 import cruga.team.fragents.HomeFragment;
@@ -24,6 +24,7 @@ import cruga.team.libs.ResideMenuItem;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import cruga.team.clases.App;
 import cruga.team.clases.Tools;
@@ -39,6 +40,7 @@ public class MainActivity extends BaseActivity {
     public static final String PREF_3D_ANIMATION = "pref_animation";
     public static final String PREF_SIZE_ICON = "pref_size_icon";
     public static final String PREF_SHOW_FONT = "pref_show_font";
+    public static final String PREF_ICON_PACK = "pref_icon_pack";
     public static final String PREFERENCE_KEY = "CCG_GA";
 
     public static final String TITLE_ALL_APSS = "title_all_apps";
@@ -69,7 +71,7 @@ public class MainActivity extends BaseActivity {
     //END FINAL
     BroadcastReceiver addApp;
     //END DEFAULT VARS FOR APP
-    public static ArrayList<App> allApps = null;
+    public ArrayList<App> allApps = null;
     private ResideMenu resideMenu;
 
     @Override
@@ -103,6 +105,8 @@ public class MainActivity extends BaseActivity {
         //resideMenu.setBackground(R.drawable.menu_background);
         resideMenu.attachToActivity(this);
         resideMenu.setScaleValue(0.6f);
+        resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
+        resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_LEFT);
 
         if(Tools.getSharePref(this, PREF_3D_ANIMATION).compareTo("") == 0) {
             resideMenu.setUse3D(false);
@@ -111,35 +115,11 @@ public class MainActivity extends BaseActivity {
         }
 
         final PackageManager pm = getPackageManager();
-        //get a list of installed apps.
-        allApps = Tools.obtenerApps(this);
-
-        // create menu items;
-        for (int i = 0; i < allApps.size(); i++){
-            ResideMenuItem item = new ResideMenuItem(this, allApps.get(i).icono, allApps.get(i).label);
-
-            item.setOnClickListener(new IconClickListener(this, allApps.get(i)));
-            resideMenu.addMenuItem(item,  ResideMenu.DIRECTION_LEFT); // or  ResideMenu.DIRECTION_RIGHT
-        }
-
-        //Add Settings Listeners and Item
-        ResideMenuItem settings = new ResideMenuItem(this, R.drawable.ic_settings_white_48dp, getString(R.string.settings));
-        settings.setOnClickListener(new MenuSettingsListener(this));
-        resideMenu.addMenuItem(settings, ResideMenu.DIRECTION_RIGHT);
-
-        //Add Wallpaper Listener and Item
-        ResideMenuItem wallpaper = new ResideMenuItem(this, R.drawable.ic_wallpaper_white_48dp, getString(R.string.wallpaper));
-        wallpaper.setOnClickListener(new MenuWallpaperListener(this));
-        resideMenu.addMenuItem(wallpaper, ResideMenu.DIRECTION_RIGHT);
-
-        //Add IconPack Listener and Item
-        ResideMenuItem iconPack = new ResideMenuItem(this, R.drawable.all_apps, getString(R.string.icon_pack));
-        iconPack.setOnClickListener(new MenuIconPackListener(this, resideMenu));
-        resideMenu.addMenuItem(iconPack, ResideMenu.DIRECTION_RIGHT);
-
-
+        //get a list of installed apps and update Menu Left.
+        getAppsAndUpdateMenuLeft();
+        //set Menu Settings
+        setMenuRight();
         resideMenu.setMenuListener(menuListener);
-
 
         if( savedInstanceState == null )
             changeFragment(new HomeFragment());
@@ -150,7 +130,9 @@ public class MainActivity extends BaseActivity {
         if(getTitle() == MainActivity.TITLE_MENU_SETTINGS) {
             return super.dispatchTouchEvent(ev);
         }else {
-            return resideMenu.dispatchTouchEvent(ev);
+           // return resideMenu.dispatchTouchEvent(ev);
+            return super.dispatchTouchEvent(ev);
+
         }
 
     }
@@ -184,6 +166,41 @@ public class MainActivity extends BaseActivity {
 
     public ArrayList<App> getAllApps() {
         return allApps;
+    }
+
+
+    private void setMenuRight() {
+        //Add Settings Listeners and Item
+        ResideMenuItem settings = new ResideMenuItem(this, R.drawable.ic_settings_white_48dp, getString(R.string.settings));
+        settings.setOnClickListener(new MenuSettingsListener(this));
+        resideMenu.addMenuItem(settings, ResideMenu.DIRECTION_RIGHT);
+
+        //Add Wallpaper Listener and Item
+        ResideMenuItem wallpaper = new ResideMenuItem(this, R.drawable.ic_wallpaper_white_48dp, getString(R.string.wallpaper));
+        wallpaper.setOnClickListener(new MenuWallpaperListener(this));
+        resideMenu.addMenuItem(wallpaper, ResideMenu.DIRECTION_RIGHT);
+
+        //Add IconPack Listener and Item
+        ResideMenuItem iconPack = new ResideMenuItem(this, R.drawable.ic_icon_white_48dp, getString(R.string.icon_pack));
+        iconPack.setOnClickListener(new MenuIconPackListener(this, this, resideMenu));
+        resideMenu.addMenuItem(iconPack, ResideMenu.DIRECTION_RIGHT);
+    }
+
+    public void getAppsAndUpdateMenuLeft() {
+        allApps = Tools.obtenerApps(this, this);
+        List<ResideMenuItem> itemApps = new ArrayList<>();
+
+        for (int i = 0; i < allApps.size(); i++){
+
+            String lbl = allApps.get(i).label;
+            Drawable ic = allApps.get(i).icono;
+
+            ResideMenuItem itemMenuReside = new ResideMenuItem(this, ic, lbl);
+            itemMenuReside.setOnClickListener(new IconClickListener(this, allApps.get(i)));
+            itemApps.add(itemMenuReside);
+        }
+
+        resideMenu.setMenuItems(itemApps, ResideMenu.DIRECTION_LEFT);
     }
 
     @Override

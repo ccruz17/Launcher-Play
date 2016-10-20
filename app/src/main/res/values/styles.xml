@@ -22,7 +22,7 @@
         <item name="rd_rippleColor">@color/colorPrimaryDark</item>
         <item name="rd_cornerRadius">4dp</item>
         <item name="rd_delayClick">afterRelease</item>
-        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Button</item>
+        <item name="android:textAppearance">@style/Widget.AppCompat.Button</item>
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 

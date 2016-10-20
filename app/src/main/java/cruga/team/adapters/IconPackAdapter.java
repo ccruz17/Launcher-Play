@@ -40,13 +40,14 @@ public class IconPackAdapter extends BaseAdapter {
         return position;
     }
 
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         View view = convertView;
 
         if (view == null) {
-            view = layoutInflater.inflate(R.layout.simple_grid_item, parent, false);
+            view = layoutInflater.inflate(R.layout.simple_list_item, parent, false);
 
             viewHolder = new ViewHolder();
             viewHolder.textView = (TextView) view.findViewById(R.id.text_view);

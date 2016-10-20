@@ -23,7 +23,7 @@ import cruga.team.clases.IconPackManager;
 import cruga.team.clases.IconPackManager.IconPack;
 
 public class Tools {
-    public static ArrayList<App> obtenerApps(Context mContext) {
+    public static ArrayList<App> obtenerApps(Activity mActivity, Context mContext) {
         PackageManager pm = mContext.getPackageManager();
 
         Intent mainIntent = new Intent(Intent.ACTION_MAIN,null);
@@ -33,11 +33,16 @@ public class Tools {
 
         IconPackManager iP = new IconPackManager();
         iP.setContext(mContext);
+        iP.setActivity(mActivity);
         HashMap<String, IconPack> map = iP.getAvailableIconPacks(true);
-        String theme = "mundoiux.cruga.iux_icon_pack";
+        String theme = getSharePref(mActivity, MainActivity.PREF_ICON_PACK);
         if(map.size()>0) {
-            map.get(theme).load();
+            if(map.containsKey(theme)) {
+                map.get(theme).load();
+            }
         }
+
+        Log.i("THEME-SIZE", map.size() + "*");
 
         for(int i=0;i<pacsList.size();i++){
             App appMomento = new App();
@@ -45,14 +50,10 @@ public class Tools {
             appMomento.packageName = pacsList.get(i).activityInfo.packageName;
             appMomento.activity = pacsList.get(i).activityInfo.name;
             appMomento.label = pacsList.get(i).loadLabel(pm).toString();
-            boolean existTheme = false;
-            if(existTheme) {
+            boolean existTheme = true;
 
-                if(map.size()>0) {
-                   appMomento.icono = map.get(theme).getDrawableIconForPackage(pacsList.get(i).activityInfo.packageName, pacsList.get(i).loadIcon(pm));
-                }else {
-                    appMomento.icono = pacsList.get(i).loadIcon(pm);
-                }
+            if(map.containsKey(theme)) {
+                appMomento.icono = map.get(theme).getDrawableIconForPackage(pacsList.get(i).activityInfo.packageName, pacsList.get(i).loadIcon(pm));
             } else {
                 appMomento.icono = pacsList.get(i).loadIcon(pm);
             }
@@ -75,7 +76,7 @@ public class Tools {
     public static ArrayList<App> obtenerCustomApps(Activity act) {
 
         ArrayList<App> apps = new ArrayList<App>();
-        apps = obtenerApps(act.getApplicationContext());
+        apps = obtenerApps(act, act.getApplicationContext());
         ArrayList<App> tmpApps = new ArrayList<App>();
 
         Set<String> mySet = getSharePrefset(act, MainActivity.PREF_CUSTOM_APPS);

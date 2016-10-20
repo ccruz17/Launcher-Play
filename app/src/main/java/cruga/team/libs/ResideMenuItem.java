@@ -3,6 +3,8 @@ package cruga.team.libs;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,6 +33,9 @@ public class ResideMenuItem extends LinearLayout{
         super(context);
         initViews(context);
         iv_icon.setImageDrawable(icon);
+        Animation pulse = AnimationUtils.loadAnimation(context, R.anim.pulse);
+        iv_icon.startAnimation(pulse);
+
         tv_title.setText(title);
     }
 
