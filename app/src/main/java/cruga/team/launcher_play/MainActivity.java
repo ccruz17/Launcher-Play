@@ -2,7 +2,9 @@ package cruga.team.launcher_play;
 
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,7 +18,6 @@ import android.view.MotionEvent;
 
 import cruga.team.fragents.HomeFragment;
 import cruga.team.fragents.PreferenceFragment;
-import cruga.team.listeners.AddAppBroadCastReceiver;
 import cruga.team.listeners.IconClickListener;
 import cruga.team.libs.ResideMenu;
 import cruga.team.libs.ResideMenuItem;
@@ -124,6 +125,15 @@ public class MainActivity extends BaseActivity {
         if( savedInstanceState == null )
             changeFragment(new HomeFragment());
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+        filter.addDataScheme("package");
+
+        addApp = new AddAppBroadCastReceiver();
+        registerReceiver(addApp, filter);
+
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -206,7 +216,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        unregisterReceiver(addApp);
     }
 
 
@@ -214,20 +223,12 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         Log.i("GRUGA_EVENT", "OnStart");
-        initBroadcastRecibers();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         Log.i("GRUGA_EVENT", "OnRestart");
-        initBroadcastRecibers();
-    }
-
-    public void initBroadcastRecibers()
-    {
-        addApp = new AddAppBroadCastReceiver();
-        registerReceiver(addApp, new Tools().filterApps());
     }
 
     @Override
@@ -280,5 +281,16 @@ public class MainActivity extends BaseActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public class AddAppBroadCastReceiver extends BroadcastReceiver {
+
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("EVENT", "onReciver");
+            //update apps and preferences for apps
+            getAppsAndUpdateMenuLeft();
+        }
     }
 }

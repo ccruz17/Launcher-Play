@@ -34,14 +34,6 @@
         </activity>
         <activity android:name=".BaseActivity">
         </activity>
-        <!-- On new app installed or sdcard mount / unmount refresh the list -->
-        <!--receiver android:name="cruga.team.listeners.AddAppBroadCastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
-            </intent-filter>
-        </receiver-->
-
     </application>
 
 </manifest>

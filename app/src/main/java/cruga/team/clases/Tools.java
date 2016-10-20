@@ -172,12 +172,4 @@ public class Tools {
         prefs.edit().putStringSet(name, val).commit();
     }
 
-    public IntentFilter filterApps()
-    {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        return filter;
-    }
-
 }
