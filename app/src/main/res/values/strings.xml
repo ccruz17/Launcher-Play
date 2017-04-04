@@ -28,4 +28,6 @@
         <item>Normal</item>
         <item>Big</item>
     </string-array>
+
+    <string name="search">Search</string>
 </resources>

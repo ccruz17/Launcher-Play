@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 
+import com.arlib.floatingsearchview.FloatingSearchView;
+
 import cruga.team.fragents.HomeFragment;
 import cruga.team.fragents.PreferenceFragment;
 import cruga.team.listeners.IconClickListener;
@@ -74,6 +76,7 @@ public class MainActivity extends BaseActivity {
     //END DEFAULT VARS FOR APP
     public ArrayList<App> allApps = null;
     private ResideMenu resideMenu;
+    private FloatingSearchView mSearchView;
 
     @Override
     public void onBackPressed() {
@@ -137,14 +140,15 @@ public class MainActivity extends BaseActivity {
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        //resideMenu.dispatchTouchEvent(ev);
         if(getTitle() == MainActivity.TITLE_MENU_SETTINGS) {
+           // Log.i("CCG", "Event Title settings");
             return super.dispatchTouchEvent(ev);
-        }else {
+        } else {
+           // Log.i("CCG", "Event");
            // return resideMenu.dispatchTouchEvent(ev);
             return super.dispatchTouchEvent(ev);
-
         }
-
     }
 
     private ResideMenu.OnMenuListener menuListener = new ResideMenu.OnMenuListener() {
@@ -178,6 +182,9 @@ public class MainActivity extends BaseActivity {
         return allApps;
     }
 
+    public FloatingSearchView getSearchView() {
+        return mSearchView;
+    }
 
     private void setMenuRight() {
         //Add Settings Listeners and Item
@@ -280,8 +287,10 @@ public class MainActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 
     public class AddAppBroadCastReceiver extends BroadcastReceiver {
 
@@ -291,6 +300,9 @@ public class MainActivity extends BaseActivity {
             Log.i("EVENT", "onReciver");
             //update apps and preferences for apps
             getAppsAndUpdateMenuLeft();
+            changeFragment(new HomeFragment());
+            setTitle(MainActivity.TITLE_HOME);
+
         }
     }
 }

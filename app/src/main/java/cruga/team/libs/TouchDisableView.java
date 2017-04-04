@@ -4,6 +4,7 @@ package cruga.team.libs;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,6 @@ class TouchDisableView extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
         int width = getDefaultSize(0, widthMeasureSpec);
         int height = getDefaultSize(0, heightMeasureSpec);
         setMeasuredDimension(width, height);
@@ -59,14 +59,17 @@ class TouchDisableView extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        super.onInterceptTouchEvent(ev);
         return mTouchDisabled;
     }
 
     void setTouchDisable(boolean disableTouch) {
+        Log.i("CCG", "setTouchDisable");
         mTouchDisabled = disableTouch;
     }
 
     boolean isTouchDisabled() {
         return mTouchDisabled;
     }
+
 }

@@ -33,9 +33,9 @@ public class ResideMenuItem extends LinearLayout{
         super(context);
         initViews(context);
         iv_icon.setImageDrawable(icon);
-        Animation pulse = AnimationUtils.loadAnimation(context, R.anim.pulse);
+        /*Animation pulse = AnimationUtils.loadAnimation(context, R.anim.pulse);
         iv_icon.startAnimation(pulse);
-
+        */
         tv_title.setText(title);
     }
 

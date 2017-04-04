@@ -2,7 +2,9 @@ package cruga.team.listeners;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
@@ -55,24 +57,44 @@ public class MenuIconPackListener implements View.OnClickListener {
         //Get Themes
         HashMap<String, IconPackManager.IconPack> map = iP.getAvailableIconPacks(true);
         //Iter map and add to list
+        Boolean isSketchIconPack = false;
+
+        App defaultTheme = new App();
+        defaultTheme.packageName = mContext.getResources().getString(R.string.app_packagename);
+        defaultTheme.icono = mContext.getResources().getDrawable(R.drawable.ic_launcher_48);
+        defaultTheme.label = mContext.getResources().getString(R.string.app_name);
+        themesInstalled.add(defaultTheme);
+
+
         for (HashMap.Entry<String, IconPackManager.IconPack> entry : map.entrySet()) {
 
             IconPackManager.IconPack iconPack = entry.getValue();
 
             App theme = new App();
             theme.packageName = iconPack.packageName;
+
+            Log.i("CRUGA-PACK", "" + iconPack.packageName);
+
+            if(iconPack.packageName.compareTo("mundoiux.cruga.iux_icon_pack") == 0) {
+                isSketchIconPack = true;
+            }
+
             theme.icono = iconPack.iconForTheme;
             theme.label = iconPack.name;
 
             themesInstalled.add(theme);
         }
 
-        App defaultTheme = new App();
-        defaultTheme.packageName = mContext.getResources().getString(R.string.app_packagename);
-        defaultTheme.icono = mContext.getResources().getDrawable(R.drawable.ic_launcher_48);
-        defaultTheme.label = mContext.getResources().getString(R.string.app_name);
 
-        themesInstalled.add(defaultTheme);
+        if(!isSketchIconPack) {
+            defaultTheme = new App();
+            defaultTheme.packageName = "mundoiux.cruga.iux_icon_pack";
+            defaultTheme.icono = mContext.getResources().getDrawable(R.drawable.ic_iux_iconpack_48);
+            defaultTheme.label = "Try with IUX Icon Pack";
+            themesInstalled.add(defaultTheme);
+        }
+
+
 
         IconPackAdapter iconAdapter = new IconPackAdapter(mContext, themesInstalled);
 
@@ -83,21 +105,30 @@ public class MenuIconPackListener implements View.OnClickListener {
                 .setOnItemClickListener(new OnItemClickListener() {
                     @Override
                     public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+                        if(themesInstalled.get(position).label.compareTo("Try with IUX Icon Pack") == 0) {
 
-                        Log.i("CRUGA", position + "-" + themesInstalled.get(position).packageName);
+                            try {
+                                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + themesInstalled.get(position).packageName)));
+                            } catch (android.content.ActivityNotFoundException err) {
+                                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + themesInstalled.get(position).packageName)));
+                            }
+                            dialog.dismiss();
 
-                        Tools t = new Tools();
-                        t.setSharePref(mainActivity, MainActivity.PREF_ICON_PACK, themesInstalled.get(position).packageName);
+                        }else {
+                            Tools t = new Tools();
+                            t.setSharePref(mainActivity, MainActivity.PREF_ICON_PACK, themesInstalled.get(position).packageName);
 
-                        resideMenu.clearIgnoredViewList();
-                        mainActivity.getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fragment_container, new HomeFragment(), "fragment")
-                                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                                .commit();
-                        mainActivity.setTitle(MainActivity.TITLE_HOME);
-                        dialog.dismiss();
-                        mainActivity.getAppsAndUpdateMenuLeft();
+                            resideMenu.clearIgnoredViewList();
+                            mainActivity.getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_container, new HomeFragment(), "fragment")
+                                    .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                    .commit();
+                            mainActivity.setTitle(MainActivity.TITLE_HOME);
+                            dialog.dismiss();
+                            mainActivity.getAppsAndUpdateMenuLeft();
+                        }
+
 
                     }
                 })

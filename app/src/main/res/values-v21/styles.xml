@@ -27,7 +27,6 @@
     </style>
 
     <style name="AppTheme" parent="android:Theme.DeviceDefault.Wallpaper.NoTitleBar">
-
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
-
 </resources>

@@ -604,7 +604,7 @@ public class CircleMenu extends ViewGroup {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            onLongClickListener.onLongClick();
+            //onLongClickListener.onLongClick();
         }
 
         @Override

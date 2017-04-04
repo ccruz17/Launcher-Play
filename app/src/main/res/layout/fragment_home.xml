@@ -1,23 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/fragment_ignore">
+    android:orientation="vertical">
 
-    <cruga.team.libs.CircleMenu
-        android:id="@+id/circle_menu_items"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:orientation="vertical"
+        android:id="@+id/fragment_ignore"
+        android:layout_below="@+id/floating_search_view">
 
-    <ImageView
-        android:id="@+id/circle_menu_center"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:contentDescription="@null"
-        android:src="@drawable/all_apps" />
+
+        <cruga.team.libs.CircleMenu
+            android:id="@+id/circle_menu_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/circle_menu_center"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/all_apps"
+            android:layout_alignTop="@+id/circle_menu_items"
+            />
+
+        <ImageView
+            android:id="@+id/settings_home"
+            android:layout_gravity="bottom|left|right"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_settings_white_48dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:paddingBottom="@dimen/margin"
+            android:paddingLeft="@dimen/margin" />
+
+    </FrameLayout>
+
+    <com.arlib.floatingsearchview.FloatingSearchView
+        android:id="@+id/floating_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_leftActionMode="noLeftAction"
+        app:floatingSearch_searchBarMarginLeft="@dimen/search_view_inset"
+        app:floatingSearch_searchBarMarginRight="@dimen/search_view_inset"
+        app:floatingSearch_searchBarMarginTop="@dimen/search_view_inset"
+        app:floatingSearch_searchHint="Search..."
+        app:floatingSearch_showSearchKey="true"
+        app:floatingSearch_suggestionsListAnimDuration="250" />
 
 </FrameLayout>
 

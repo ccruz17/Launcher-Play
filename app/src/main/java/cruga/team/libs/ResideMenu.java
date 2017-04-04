@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.*;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
@@ -199,6 +200,10 @@ public class ResideMenu extends FrameLayout {
         parent.removeView(scrollViewRightMenu);
     }
 
+    public void disableTouch(Boolean bol) {
+        viewActivity.setTouchDisable(bol);
+    }
+
     private void setShadowAdjustScaleXByOrientation() {
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -342,10 +347,11 @@ public class ResideMenu extends FrameLayout {
     public void openMenu(int direction) {
 
         setScaleDirection(direction);
+        Log.i("CCG", "-" + direction + "-");
         setShadowVisible(true);
 
         isOpened = true;
-        AnimatorSet scaleDown_activity = buildScaleDownAnimation(viewActivity, mScaleValue, mScaleValue);
+        /*AnimatorSet scaleDown_activity = buildScaleDownAnimation(viewActivity, mScaleValue, mScaleValue);
         AnimatorSet scaleDown_shadow = buildScaleDownAnimation(imageViewShadow,
                 mScaleValue + shadowAdjustScaleX, mScaleValue + shadowAdjustScaleY);
         AnimatorSet alpha_menu = buildMenuAnimation(scrollViewMenu, 1.0f);
@@ -353,6 +359,16 @@ public class ResideMenu extends FrameLayout {
         scaleDown_activity.playTogether(scaleDown_shadow);
         scaleDown_activity.playTogether(alpha_menu);
         scaleDown_activity.start();
+        */
+        int duration = true ? 250 : 0;
+        AnimatorSet activityScaleDown = buildScaleDownAnimation(viewActivity, mScaleValue, mScaleValue, duration);
+        AnimatorSet shadowScaleDown = buildScaleDownAnimation(imageViewShadow,
+                mScaleValue + shadowAdjustScaleX, mScaleValue + shadowAdjustScaleY, duration);
+        AnimatorSet menuAlpha = buildMenuAnimation(scrollViewMenu, 1.0f, duration);
+        shadowScaleDown.addListener(animationListener);
+        activityScaleDown.playTogether(shadowScaleDown);
+        activityScaleDown.playTogether(menuAlpha);
+        activityScaleDown.start();
     }
 
     /**
@@ -362,13 +378,22 @@ public class ResideMenu extends FrameLayout {
 
         setShadowVisible(false);
         isOpened = false;
-        AnimatorSet scaleUp_activity = buildScaleUpAnimation(viewActivity, 1.0f, 1.0f);
+        /*AnimatorSet scaleUp_activity = buildScaleUpAnimation(viewActivity, 1.0f, 1.0f);
         AnimatorSet scaleUp_shadow = buildScaleUpAnimation(imageViewShadow, 1.0f, 1.0f);
         AnimatorSet alpha_menu = buildMenuAnimation(scrollViewMenu, 0.0f);
         scaleUp_activity.addListener(animationListener);
         scaleUp_activity.playTogether(scaleUp_shadow);
         scaleUp_activity.playTogether(alpha_menu);
         scaleUp_activity.start();
+        */
+        int duration = true ? 250 : 0;
+                AnimatorSet activityScaleUp = buildScaleUpAnimation(viewActivity, 1.0f, 1.0f, duration);
+                AnimatorSet shadowScaleUp = buildScaleUpAnimation(imageViewShadow, 1.0f, 1.0f, duration);
+                AnimatorSet alpha_menu = buildMenuAnimation(scrollViewMenu, 0.0f, duration);
+                activityScaleUp.addListener(animationListener);
+                activityScaleUp.playTogether(shadowScaleUp);
+                activityScaleUp.playTogether(alpha_menu);
+                activityScaleUp.start();
     }
 
     @Deprecated
@@ -485,6 +510,18 @@ public class ResideMenu extends FrameLayout {
         return scaleDown;
     }
 
+    private AnimatorSet buildScaleDownAnimation(View target,float targetScaleX, float targetScaleY, int duration){
+        AnimatorSet scaleDown = new AnimatorSet();
+        scaleDown.playTogether(
+                ObjectAnimator.ofFloat(target, "scaleX", targetScaleX),
+                ObjectAnimator.ofFloat(target, "scaleY", targetScaleY)
+        );
+
+        scaleDown.setInterpolator(AnimationUtils.loadInterpolator(activity,
+                android.R.anim.decelerate_interpolator));
+        scaleDown.setDuration(duration);
+        return scaleDown;
+    }
     /**
      * A helper method to build scale up animation;
      *
@@ -509,6 +546,16 @@ public class ResideMenu extends FrameLayout {
         return scaleUp;
     }
 
+    private AnimatorSet buildScaleUpAnimation(View target,float targetScaleX,float targetScaleY, int duration){
+        AnimatorSet scaleUp = new AnimatorSet();
+        scaleUp.playTogether(
+                ObjectAnimator.ofFloat(target, "scaleX", targetScaleX),
+                ObjectAnimator.ofFloat(target, "scaleY", targetScaleY)
+        );
+        scaleUp.setDuration(duration);
+        return scaleUp;
+    }
+
     private AnimatorSet buildMenuAnimation(View target, float alpha) {
 
         AnimatorSet alphaAnimation = new AnimatorSet();
@@ -517,6 +564,17 @@ public class ResideMenu extends FrameLayout {
         );
 
         alphaAnimation.setDuration(250);
+        return alphaAnimation;
+    }
+
+    private AnimatorSet buildMenuAnimation(View target, float alpha, int duration){
+
+        AnimatorSet alphaAnimation = new AnimatorSet();
+        alphaAnimation.playTogether(
+                ObjectAnimator.ofFloat(target, "alpha", alpha)
+        );
+
+        alphaAnimation.setDuration(duration);
         return alphaAnimation;
     }
 
@@ -598,6 +656,7 @@ public class ResideMenu extends FrameLayout {
                 break;
 
             case MotionEvent.ACTION_MOVE:
+
                 if (isInIgnoredView || isInDisableDirection(scaleDirection))
                     break;
 
@@ -623,7 +682,7 @@ public class ResideMenu extends FrameLayout {
 
                     float targetScale = getTargetScale(ev.getRawX());
                     if (mUse3D) {
-                        int angle = scaleDirection == DIRECTION_LEFT ? -ROTATE_Y_ANGLE : ROTATE_Y_ANGLE;
+                        float angle = scaleDirection == DIRECTION_LEFT ? -ROTATE_Y_ANGLE : ROTATE_Y_ANGLE;
                         angle *= (1 - targetScale) * 2;
                         ViewHelper.setRotationY(viewActivity, angle);
 
