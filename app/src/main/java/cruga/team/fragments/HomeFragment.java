@@ -1,4 +1,4 @@
-package cruga.team.fragents;
+package cruga.team.fragments;
 
 /**
  * Created by christian on 12/07/16.
@@ -7,16 +7,16 @@ package cruga.team.fragents;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.speech.RecognizerIntent;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment {
     public static ArrayList<App> customApps = null;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1023;
     FloatingSearchView mSearchView;
-    private String mLastQuery = "";
+    private String GoogleQuery = "";
     MainActivity parentActivity;
 
 
@@ -64,6 +64,11 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i("CRUGA-EVENT", "HomeFragment-OnCreateView");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.transparent));
+        }
         //----------------------------------Inicializar vistas----------------------------------------\\
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
 
@@ -180,6 +185,29 @@ public class HomeFragment extends Fragment {
                         intent.setComponent(new ComponentName(unique.packageName, unique.activity));
                         getActivity().startActivity(intent);
                     }
+
+                    GoogleQuery = myQuery;
+
+                    if(l.size() == 0 && myQuery.length()>=3) {
+                        SearchSuggestion sug = new SearchSuggestion() {
+                            @Override
+                            public String getBody() {
+                                return getString(R.string.search_with_google);
+                            }
+
+                            @Override
+                            public int describeContents() {
+                                return -1;
+                            }
+
+                            @Override
+                            public void writeToParcel(Parcel dest, int flags) {
+
+                            }
+                        };
+                        l.add(sug);
+                        mSearchView.swapSuggestions(l);
+                    }
                 } else {
                     mSearchView.clearSuggestions();
                 }
@@ -189,15 +217,22 @@ public class HomeFragment extends Fragment {
         mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
             @Override
             public void onSuggestionClicked(final SearchSuggestion searchSuggestion) {
-                mSearchView.clearSearchFocus();
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.setComponent(new ComponentName(myApps.get(searchSuggestion.describeContents()).packageName, myApps.get(searchSuggestion.describeContents()).activity));
-                getActivity().startActivity(intent);
+
+                if(searchSuggestion.describeContents() == -1) {
+                    Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+                    intent.putExtra(SearchManager.QUERY, GoogleQuery); // query contains search string
+                    startActivity(intent);
+                } else {
+                    mSearchView.clearSearchFocus();
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.setComponent(new ComponentName(myApps.get(searchSuggestion.describeContents()).packageName, myApps.get(searchSuggestion.describeContents()).activity));
+                    getActivity().startActivity(intent);
+                }
             }
 
             @Override
             public void onSearchAction(String query) {
-                mLastQuery = query;
+                GoogleQuery = query;
                 Log.d("CCG", "onSearchAction()");
                 Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
                 intent.putExtra(SearchManager.QUERY, query); // query contains search string
@@ -209,8 +244,13 @@ public class HomeFragment extends Fragment {
         mSearchView.setOnBindSuggestionCallback(new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
             @Override
             public void onBindSuggestion(View suggestionView, ImageView leftIcon, TextView textView, SearchSuggestion item, int itemPosition) {
-                leftIcon.setImageDrawable(myApps.get(item.describeContents()).icono);
-                textView.setTextColor(getResources().getColor(R.color.cardview_dark_background));
+                if(item.describeContents() == -1) {
+                    leftIcon.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.google_search));
+                    textView.setTextColor(getResources().getColor(R.color.cardview_dark_background));
+                } else {
+                    leftIcon.setImageDrawable(myApps.get(item.describeContents()).icono);
+                    textView.setTextColor(getResources().getColor(R.color.cardview_dark_background));
+                }
             }
         });
 
@@ -228,6 +268,7 @@ public class HomeFragment extends Fragment {
 
         return rootView;
     }
+
 
     private void loadPreferences(){
         if(Tools.getSharePref(getActivity(), MainActivity.PREF_ROTATION).compareTo("") == 0) {

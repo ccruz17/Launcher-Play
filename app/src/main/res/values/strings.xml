@@ -22,6 +22,7 @@
     <string name="apply_theme">Apply theme</string>
     <string name="select_your_custom_icon_pack">Select your custom icon pack:</string>
     <string name="close">Close</string>
+    <string name="search_with_google">Search with Google</string>
 
     <string-array name="icon_size_array">
         <item>Small</item>
@@ -29,5 +30,8 @@
         <item>Big</item>
     </string-array>
 
-    <string name="search">Search</string>
+    <string name="search">Search...</string>
+    <string name="about_launcher_play">About Launcher Play</string>
+    <string name="about_launcher_play_text">Know about Launcher Play</string>
+    <string name="about">Launcher Play</string>
 </resources>

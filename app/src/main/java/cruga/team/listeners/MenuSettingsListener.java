@@ -3,7 +3,7 @@ package cruga.team.listeners;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
-import cruga.team.fragents.PreferenceFragment;
+import cruga.team.fragments.PreferenceFragment;
 import cruga.team.launcher_play.MainActivity;
 import cruga.team.launcher_play.R;
 

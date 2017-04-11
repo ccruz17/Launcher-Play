@@ -1,9 +1,7 @@
 package cruga.team.listeners;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -17,18 +15,15 @@ import com.orhanobut.dialogplus.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import cruga.team.adapters.IconPackAdapter;
 import cruga.team.clases.App;
 import cruga.team.clases.IconPackManager;
 import cruga.team.clases.Tools;
-import cruga.team.fragents.HomeFragment;
+import cruga.team.fragments.HomeFragment;
 import cruga.team.launcher_play.MainActivity;
 import cruga.team.launcher_play.R;
 import cruga.team.libs.ResideMenu;
-import cruga.team.libs.ResideMenuItem;
 
 /**
  * Created by christian on 14/09/16.

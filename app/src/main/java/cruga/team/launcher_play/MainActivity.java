@@ -14,12 +14,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 
 
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.nightonke.boommenu.BoomMenuButton;
 
-import cruga.team.fragents.HomeFragment;
-import cruga.team.fragents.PreferenceFragment;
+import cruga.team.fragments.HomeFragment;
+import cruga.team.fragments.PreferenceFragment;
 import cruga.team.listeners.IconClickListener;
 import cruga.team.libs.ResideMenu;
 import cruga.team.libs.ResideMenuItem;
@@ -51,6 +53,7 @@ public class MainActivity extends BaseActivity {
     public static final String TITLE_MENU_CONFIG = "title_config";
     public static final String TITLE_MENU_SETTINGS = "title_settings";
     public static final String TITLE_MENU_SETTINGS_CUSTOM_APPS = "title_settings_custom_apps";
+    public static final String TITLE_MENU_SETTINGS_ABOUT = "title_about";
 
     public static final int [] ICON_SIZES = { 40, 50, 60};
 
@@ -77,6 +80,9 @@ public class MainActivity extends BaseActivity {
     public ArrayList<App> allApps = null;
     private ResideMenu resideMenu;
     private FloatingSearchView mSearchView;
+    private IntentFilter filter = null;
+    private BoomMenuButton bmb = null;
+
 
     @Override
     public void onBackPressed() {
@@ -93,7 +99,12 @@ public class MainActivity extends BaseActivity {
            setTitle(MainActivity.TITLE_ALL_APSS);
         } else if(getTitle() == TITLE_MENU_CONFIG) {
            resideMenu.closeMenu();
-        } else {
+        } else if(getTitle() == "FlottingtMenu") {
+            bmb.reboom();
+            setTitle(MainActivity.TITLE_ALL_APSS);
+        } else if(getTitle() == TITLE_MENU_SETTINGS_ABOUT) {
+            changeFragment(new PreferenceFragment());
+        }else {
             super.onBackPressed();
         }
 
@@ -127,16 +138,6 @@ public class MainActivity extends BaseActivity {
 
         if( savedInstanceState == null )
             changeFragment(new HomeFragment());
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
-        filter.addDataScheme("package");
-
-        addApp = new AddAppBroadCastReceiver();
-        registerReceiver(addApp, filter);
-
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -205,15 +206,26 @@ public class MainActivity extends BaseActivity {
 
     public void getAppsAndUpdateMenuLeft() {
         allApps = Tools.obtenerApps(this, this);
-        List<ResideMenuItem> itemApps = new ArrayList<>();
+        final List<ResideMenuItem> itemApps = new ArrayList<>();
 
         for (int i = 0; i < allApps.size(); i++){
 
             String lbl = allApps.get(i).label;
-            Drawable ic = allApps.get(i).icono;
+            String packagename = allApps.get(i).packageName;
+            final Drawable ic = allApps.get(i).icono;
 
-            ResideMenuItem itemMenuReside = new ResideMenuItem(this, ic, lbl);
+
+            final ResideMenuItem itemMenuReside = new ResideMenuItem(this, ic, lbl, packagename);
             itemMenuReside.setOnClickListener(new IconClickListener(this, allApps.get(i)));
+            itemMenuReside.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    bmb = itemMenuReside.getBoomMenu();
+                    bmb.boom();
+                    setTitle("FlottingtMenu");
+                    return true;
+                }
+            });
             itemApps.add(itemMenuReside);
         }
 
@@ -222,6 +234,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onStop() {
+        unregisterReceiver(addApp);
         super.onStop();
     }
 
@@ -229,6 +242,15 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+        filter.addDataScheme("package");
+
+        addApp = new AddAppBroadCastReceiver();
+        registerReceiver(addApp, filter);
+
         Log.i("GRUGA_EVENT", "OnStart");
     }
 
@@ -260,11 +282,8 @@ public class MainActivity extends BaseActivity {
         } else if(getTitle() == TITLE_MENU_CONFIG  && MainActivity.HOME_PRESS) {
             resideMenu.closeMenu();
         }
-
         MainActivity.HOME_PRESS = true;
-
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -290,7 +309,6 @@ public class MainActivity extends BaseActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
     public class AddAppBroadCastReceiver extends BroadcastReceiver {
 

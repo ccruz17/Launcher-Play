@@ -1,10 +1,13 @@
-package cruga.team.fragents;
+package cruga.team.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -44,10 +47,16 @@ public class PreferenceFragment extends BaseSettingsFragment {
     LinearLayout linearLayoutPremium;
 
 
-    RelativeLayout menu_settings_apps, menu_premium_features, menu_coffee, menu_beer, menu_ticket;
+    RelativeLayout menu_settings_apps, menu_premium_features, menu_coffee, menu_beer, menu_ticket, menu_about;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+        }
+
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_settings, container, false);
 
         final MainActivity parentActivity = (MainActivity)getActivity();
@@ -58,6 +67,7 @@ public class PreferenceFragment extends BaseSettingsFragment {
         menu_coffee = (RelativeLayout)rootView.findViewById(R.id.menu_coffee);
         menu_beer = (RelativeLayout)rootView.findViewById(R.id.menu_beer);
         menu_ticket = (RelativeLayout)rootView.findViewById(R.id.menu_ticket);
+        menu_about = (RelativeLayout)rootView.findViewById(R.id.menu_about);
 
         txt_donations = (TextView)rootView.findViewById(R.id.txtDonations);
         linearLayoutPremium = (LinearLayout)rootView.findViewById(R.id.linearFeaturesFriends);
@@ -93,6 +103,19 @@ public class PreferenceFragment extends BaseSettingsFragment {
             @Override
             public void onClick(View v) {
                 sendBuy(sku_ticket, token_ticket);
+            }
+        });
+
+        menu_about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AboutFragment about = new AboutFragment();
+
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, about, "fragment")
+                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
             }
         });
 

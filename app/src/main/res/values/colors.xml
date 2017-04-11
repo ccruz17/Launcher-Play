@@ -11,4 +11,8 @@
     <color name="lines">#dd1e1e1e</color>
     <color name="overlay_light">#F8F8F8</color>
 
+
+    <color name="blue_info">#2196F3</color>
+    <color name="red_uninstall">#F44336</color>
+
 </resources>

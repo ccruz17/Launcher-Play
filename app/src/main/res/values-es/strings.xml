@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Launcher Play</string>
+    <string name="app_packagename">cruga.team.launcher_play</string>
+    <string name="all_apps">Todas las Apps</string>
+    <string name="settings">Ajustes</string>
+    <string name="wallpaper">Fondo de pantalla</string>
+    <string name="coffee">Un café</string>
+    <string name="a_beer">Una cerveza</string>
+    <string name="icon_size">Tamaño de icono</string>
+    <string name="circle_menu_apps">Aplicaciones del circulo</string>
+    <string name="donations">Donaciones</string>
+    <string name="apps_settings">Ajustes de las apps</string>
+    <string name="rotating">Rotar</string>
+    <string name="_3d_animations">Animaciones 3d</string>
+    <string name="general_settings">Ajustes generales</string>
+    <string name="show_text_icon">Mostrar texto en iconos</string>
+    <string name="features_for_my_friends">Caracteristícas para mis amigos</string>
+    <string name="unlock_premium_features">Desbloquear características premium</string>
+    <string name="if_you_like_my_app_you_can_try_to_help_this_app_will_never_have_advertising">Si te gusta la app, puedes intentar ayudar, por cierto no tenemos publicidad</string>
+    <string name="bus_ticket">Boleto del metrobus</string>
+    <string name="icon_pack">Paquete de iconos</string>
+    <string name="apply_theme">Aplicar tema</string>
+    <string name="select_your_custom_icon_pack">Selecciona tus iconos favoritos</string>
+    <string name="close">Cerra</string>
+    <string name="search_with_google">Buscar con Google</string>
+
+    <string-array name="icon_size_array">
+        <item>Pequeño</item>
+        <item>Normal</item>
+        <item>Grande</item>
+    </string-array>
+
+    <string name="search">Buscar...</string>
+    <string name="about_launcher_play">Acerca de Launcher Play</string>
+    <string name="about_launcher_play_text">Conoce más sobre Launcher Play</string>
+    <string name="about">Launcher Play</string>
+</resources>

@@ -172,6 +172,51 @@
         android:id="@+id/linearAppSettings">
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/textView6"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@+id/textView6"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/ruler"
+                    android:tint="#ffffff"
+                    android:tintMode="src_in" />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/imageView4"
+                    android:layout_toRightOf="@+id/imageView4"
+                    android:text="@string/icon_size"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <Spinner
+                    android:id="@+id/icon_size_spinner"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -252,51 +297,6 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp" >
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageView4"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ruler"
-                    android:layout_alignTop="@+id/textView6"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignBottom="@+id/textView6"
-                    android:tint="#ffffff"
-                    android:tintMode="src_in" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/icon_size"
-                    android:id="@+id/textView6"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/imageView4"
-                    android:layout_toEndOf="@+id/imageView4" />
-
-                <Spinner
-                    android:id="@+id/icon_size_spinner"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
-
-            </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:minHeight="1dp"
@@ -362,86 +362,86 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/linearFeaturesFriends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearFeaturesFriends"
+        android:orientation="vertical"
         android:visibility="gone">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:paddingTop="20dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <TextView
+                    android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/features_for_my_friends"
-                    android:id="@+id/textView11" />
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/lines"
             android:gravity="center"
             android:minHeight="1dp"
-            android:background="@color/lines" >
+            android:orientation="horizontal">
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp" >
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp">
 
             <RelativeLayout
+                android:id="@+id/menu_premium_fetures"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/menu_premium_fetures">
+                android:layout_height="match_parent">
 
                 <ImageView
+                    android:id="@+id/imageView7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageView7"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_alignTop="@+id/textView12"
+                    android:layout_alignBottom="@+id/textView12"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_alignBottom="@+id/textView12"
+                    android:layout_alignTop="@+id/textView12"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/premium"
                     android:tint="#ffffff"
-                    android:tintMode="src_in"
-                    android:src="@drawable/premium" />
+                    android:tintMode="src_in" />
 
                 <TextView
+                    android:id="@+id/textView12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/unlock_premium_features"
-                    android:id="@+id/textView12"
                     android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/imageView7"
                     android:layout_toRightOf="@+id/imageView7"
-                    android:layout_toEndOf="@+id/imageView7" />
+                    android:text="@string/unlock_premium_features"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
             </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/lines"
             android:gravity="center"
             android:minHeight="1dp"
-            android:background="@color/lines" />
+            android:orientation="horizontal" />
 
     </LinearLayout>
 
@@ -494,8 +494,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:visibility="gone">
+            android:paddingBottom="10dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -619,6 +618,77 @@
             android:minHeight="1dp"
             android:layout_gravity="center_horizontal"
             android:background="@color/lines" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearAbout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:id="@+id/About_Launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_launcher_play"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/lines"
+            android:gravity="center"
+            android:minHeight="1dp"
+            android:orientation="horizontal"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp">
+
+            <RelativeLayout
+                android:id="@+id/menu_about"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_alignTop="@+id/textView14"
+                    android:layout_alignBottom="@+id/textView14"
+                    android:src="@drawable/app_info_48"
+                    android:tint="#ffffff"
+                    android:tintMode="src_in" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/imageView10"
+                    android:layout_toRightOf="@+id/imageView10"
+                    android:text="@string/about_launcher_play_text"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
 
