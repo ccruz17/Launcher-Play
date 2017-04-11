@@ -34,4 +34,8 @@
     <string name="about_launcher_play">Acerca de Launcher Play</string>
     <string name="about_launcher_play_text">Conoce más sobre Launcher Play</string>
     <string name="about">Launcher Play</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="remove_this_app">Desinstalar esta aplicación</string>
+    <string name="add_to_circle_menu">Agregar al Menu</string>
+    <string name="add_to_circle_menu_long">Agraga esta app en el Menu Circular</string>
 </resources>

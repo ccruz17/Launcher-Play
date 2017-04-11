@@ -1,5 +1,6 @@
 package cruga.team.libs;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,6 +26,12 @@ import com.nightonke.boommenu.ButtonEnum;
 import com.nightonke.boommenu.Piece.BoomPiece;
 import com.nightonke.boommenu.Piece.PiecePlaceEnum;
 
+import java.util.ArrayList;
+import java.util.Set;
+
+import cruga.team.clases.App;
+import cruga.team.clases.Tools;
+import cruga.team.fragments.HomeFragment;
 import cruga.team.launcher_play.MainActivity;
 import cruga.team.launcher_play.R;
 
@@ -36,7 +43,8 @@ public class ResideMenuItem extends LinearLayout{
     private TextView tv_title;
     BoomMenuButton bmb;
     private String packagename = null;
-
+    private String appActivity = null;
+    private Activity act;
 
     public ResideMenuItem(Context context) {
         super(context);
@@ -61,6 +69,20 @@ public class ResideMenuItem extends LinearLayout{
         this.packagename = packagename;
     }
 
+    public ResideMenuItem(Drawable icon, String title, String packagename, String appActivity, Activity act) {
+        super(act);
+        initViews(act);
+        iv_icon.setImageDrawable(icon);
+        /*Animation pulse = AnimationUtils.loadAnimation(context, R.anim.pulse);
+        iv_icon.startAnimation(pulse);
+        */
+        tv_title.setText(title);
+        this.packagename = packagename;
+        this.appActivity = appActivity;
+        this.act = act;
+
+    }
+
     public String getPackageName() {
         return packagename;
     }
@@ -79,21 +101,46 @@ public class ResideMenuItem extends LinearLayout{
         tv_title = (TextView) findViewById(R.id.tv_title);
         bmb = (BoomMenuButton) findViewById(R.id.bmb);
         bmb.setButtonEnum(ButtonEnum.Ham);
-        bmb.setPiecePlaceEnum(PiecePlaceEnum.HAM_2);
-        bmb.setButtonPlaceEnum(ButtonPlaceEnum.HAM_2);
+        bmb.setPiecePlaceEnum(PiecePlaceEnum.HAM_3);
+        bmb.setButtonPlaceEnum(ButtonPlaceEnum.HAM_3);
         bmb.setOrderEnum(OrderEnum.DEFAULT);
         bmb.setShowMoveEaseEnum(EaseEnum.EaseOutBack);
 
         Rect padding = new Rect();
-        padding.bottom = 30;
-        padding.top = 30;
-        padding.right = 30;
-        padding.left = 30;
+        padding.bottom = 40;
+        padding.top = 40;
+        padding.right = 40;
+        padding.left = 40;
+
         HamButton.Builder builder = new HamButton.Builder()
+                .normalImageRes(R.drawable.app_add_48)
+                .imagePadding(padding)
+                .normalText(getContext().getString(R.string.add_to_circle_menu))
+                .subNormalText(getContext().getString(R.string.add_to_circle_menu_long))
+                .normalColor(getResources().getColor(R.color.green_add))
+                .listener(new OnBMClickListener() {
+                    @Override
+                    public void onBoomButtonClick(int index) {
+                        MainActivity mA = (MainActivity) act;
+                        HomeFragment currentFragment = (HomeFragment) mA.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                        if(currentFragment != null) {
+                            if (currentFragment.getCircleMenu() != null) {
+                                Set<String> mySet = Tools.getSharePrefset(act, MainActivity.PREF_CUSTOM_APPS);
+                                mySet.add(appActivity);
+                                Tools.setSharePref(act, MainActivity.PREF_CUSTOM_APPS, mySet);
+                                ArrayList<App> customApps = Tools.obtenerCustomApps(act);
+                                currentFragment.setItemsCircleMenu(customApps);
+                            }
+                        }
+                    }
+                });
+        bmb.addBuilder(builder);
+        
+        builder = new HamButton.Builder()
                 .normalImageRes(R.drawable.trash)
                 .imagePadding(padding)
-                .normalText("Unistall")
-                .subNormalText("Remove this app")
+                .normalText(getContext().getString(R.string.uninstall))
+                .subNormalText(getContext().getString(R.string.remove_this_app))
                 .normalColor(getResources().getColor(R.color.red_uninstall))
                 .listener(new OnBMClickListener() {
                     @Override
@@ -109,8 +156,8 @@ public class ResideMenuItem extends LinearLayout{
         builder = new HamButton.Builder()
                 .normalImageRes(R.drawable.app_info)
                 .imagePadding(padding)
-                .normalText("App info")
-                .subNormalText("Go to app settings info")
+                .normalText(getContext().getString(R.string.app_info))
+                .subNormalText(getContext().getString(R.string.go_to_app_info))
                 .normalColor(getResources().getColor(R.color.blue_info))
                 .listener(new OnBMClickListener() {
                     @Override

@@ -22,6 +22,7 @@ import com.nightonke.boommenu.BoomMenuButton;
 
 import cruga.team.fragments.HomeFragment;
 import cruga.team.fragments.PreferenceFragment;
+import cruga.team.libs.CircleMenu;
 import cruga.team.listeners.IconClickListener;
 import cruga.team.libs.ResideMenu;
 import cruga.team.libs.ResideMenuItem;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import cruga.team.clases.App;
 import cruga.team.clases.Tools;
+import cruga.team.listeners.LongClickSideMenuItemListener;
 import cruga.team.listeners.MenuIconPackListener;
 import cruga.team.listeners.MenuSettingsListener;
 import cruga.team.listeners.MenuWallpaperListener;
@@ -78,6 +80,7 @@ public class MainActivity extends BaseActivity {
     BroadcastReceiver addApp;
     //END DEFAULT VARS FOR APP
     public ArrayList<App> allApps = null;
+    public ArrayList<App> customApps = null;
     private ResideMenu resideMenu;
     private FloatingSearchView mSearchView;
     private IntentFilter filter = null;
@@ -87,6 +90,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         Log.i("CRUGA-", getTitle() + "");
+
         if(getTitle() == TITLE_MENU_SETTINGS) {
             changeFragment(new HomeFragment());
             setTitle(MainActivity.TITLE_HOME);
@@ -119,7 +123,7 @@ public class MainActivity extends BaseActivity {
         resideMenu = new ResideMenu(this);
         //resideMenu.setBackground(R.drawable.menu_background);
         resideMenu.attachToActivity(this);
-        resideMenu.setScaleValue(0.6f);
+        resideMenu.setScaleValue(0.7f);
         resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
         resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_LEFT);
 
@@ -183,6 +187,11 @@ public class MainActivity extends BaseActivity {
         return allApps;
     }
 
+    public ArrayList<App> getCustomApps() {
+        return customApps;
+    }
+
+
     public FloatingSearchView getSearchView() {
         return mSearchView;
     }
@@ -212,24 +221,24 @@ public class MainActivity extends BaseActivity {
 
             String lbl = allApps.get(i).label;
             String packagename = allApps.get(i).packageName;
+            String appactivity = allApps.get(i).activity;
             final Drawable ic = allApps.get(i).icono;
 
 
-            final ResideMenuItem itemMenuReside = new ResideMenuItem(this, ic, lbl, packagename);
+            ResideMenuItem itemMenuReside = new ResideMenuItem(ic, lbl, packagename, appactivity, this);
             itemMenuReside.setOnClickListener(new IconClickListener(this, allApps.get(i)));
-            itemMenuReside.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    bmb = itemMenuReside.getBoomMenu();
-                    bmb.boom();
-                    setTitle("FlottingtMenu");
-                    return true;
-                }
-            });
+            itemMenuReside.setOnLongClickListener(new LongClickSideMenuItemListener(this, itemMenuReside.getBoomMenu()));
             itemApps.add(itemMenuReside);
         }
-
         resideMenu.setMenuItems(itemApps, ResideMenu.DIRECTION_LEFT);
+        customApps = Tools.obtenerCustomApps(this);
+
+        HomeFragment currentFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if(currentFragment != null) {
+            if (currentFragment.getCircleMenu() != null) {
+                currentFragment.setItemsCircleMenu(customApps);
+            }
+        }
     }
 
     @Override

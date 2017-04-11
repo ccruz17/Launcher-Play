@@ -23,7 +23,7 @@ public class MenuSettingsListener implements View.OnClickListener{
 
         mActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, new PreferenceFragment(), "SETTINGS")
+                .add(R.id.fragment_container, new PreferenceFragment(), "SETTINGS")
                 .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
         mActivity.getResideMenu().closeMenu();

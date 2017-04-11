@@ -347,11 +347,10 @@ public class ResideMenu extends FrameLayout {
     public void openMenu(int direction) {
 
         setScaleDirection(direction);
-        Log.i("CCG", "-" + direction + "-");
         setShadowVisible(true);
 
         isOpened = true;
-        /*AnimatorSet scaleDown_activity = buildScaleDownAnimation(viewActivity, mScaleValue, mScaleValue);
+        AnimatorSet scaleDown_activity = buildScaleDownAnimation(viewActivity, mScaleValue, mScaleValue);
         AnimatorSet scaleDown_shadow = buildScaleDownAnimation(imageViewShadow,
                 mScaleValue + shadowAdjustScaleX, mScaleValue + shadowAdjustScaleY);
         AnimatorSet alpha_menu = buildMenuAnimation(scrollViewMenu, 1.0f);
@@ -359,8 +358,8 @@ public class ResideMenu extends FrameLayout {
         scaleDown_activity.playTogether(scaleDown_shadow);
         scaleDown_activity.playTogether(alpha_menu);
         scaleDown_activity.start();
-        */
-        int duration = true ? 250 : 0;
+
+        /*int duration = true ? 250 : 0;
         AnimatorSet activityScaleDown = buildScaleDownAnimation(viewActivity, mScaleValue, mScaleValue, duration);
         AnimatorSet shadowScaleDown = buildScaleDownAnimation(imageViewShadow,
                 mScaleValue + shadowAdjustScaleX, mScaleValue + shadowAdjustScaleY, duration);
@@ -368,7 +367,7 @@ public class ResideMenu extends FrameLayout {
         shadowScaleDown.addListener(animationListener);
         activityScaleDown.playTogether(shadowScaleDown);
         activityScaleDown.playTogether(menuAlpha);
-        activityScaleDown.start();
+        activityScaleDown.start();*/
     }
 
     /**
@@ -378,15 +377,15 @@ public class ResideMenu extends FrameLayout {
 
         setShadowVisible(false);
         isOpened = false;
-        /*AnimatorSet scaleUp_activity = buildScaleUpAnimation(viewActivity, 1.0f, 1.0f);
+        AnimatorSet scaleUp_activity = buildScaleUpAnimation(viewActivity, 1.0f, 1.0f);
         AnimatorSet scaleUp_shadow = buildScaleUpAnimation(imageViewShadow, 1.0f, 1.0f);
         AnimatorSet alpha_menu = buildMenuAnimation(scrollViewMenu, 0.0f);
         scaleUp_activity.addListener(animationListener);
         scaleUp_activity.playTogether(scaleUp_shadow);
         scaleUp_activity.playTogether(alpha_menu);
         scaleUp_activity.start();
-        */
-        int duration = true ? 250 : 0;
+
+        /*int duration = true ? 250 : 0;
                 AnimatorSet activityScaleUp = buildScaleUpAnimation(viewActivity, 1.0f, 1.0f, duration);
                 AnimatorSet shadowScaleUp = buildScaleUpAnimation(imageViewShadow, 1.0f, 1.0f, duration);
                 AnimatorSet alpha_menu = buildMenuAnimation(scrollViewMenu, 0.0f, duration);
@@ -394,6 +393,7 @@ public class ResideMenu extends FrameLayout {
                 activityScaleUp.playTogether(shadowScaleUp);
                 activityScaleUp.playTogether(alpha_menu);
                 activityScaleUp.start();
+                */
     }
 
     @Deprecated
@@ -682,7 +682,7 @@ public class ResideMenu extends FrameLayout {
 
                     float targetScale = getTargetScale(ev.getRawX());
                     if (mUse3D) {
-                        float angle = scaleDirection == DIRECTION_LEFT ? -ROTATE_Y_ANGLE : ROTATE_Y_ANGLE;
+                        int angle = scaleDirection == DIRECTION_LEFT ? -ROTATE_Y_ANGLE : ROTATE_Y_ANGLE;
                         angle *= (1 - targetScale) * 2;
                         ViewHelper.setRotationY(viewActivity, angle);
 

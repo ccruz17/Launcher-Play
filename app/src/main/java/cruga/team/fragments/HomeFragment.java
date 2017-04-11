@@ -73,7 +73,8 @@ public class HomeFragment extends Fragment {
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
 
         parentActivity = (MainActivity)getActivity();
-        customApps = Tools.obtenerCustomApps(getActivity());
+        //Get customApps
+        customApps = parentActivity.getCustomApps();
 
         //GET MENU
         resideMenu = parentActivity.getResideMenu();
@@ -82,7 +83,6 @@ public class HomeFragment extends Fragment {
         circleMenu = (CircleMenu) rootView.findViewById(R.id.circle_menu_items);
         setting_home = (ImageView) rootView.findViewById(R.id.settings_home);
 
-        circleMenu.setFirstChildPosition(CircleMenu.FirstChildPosition.NORTH);
         loadPreferences();
         circleMenu.setItems(customApps, customApps.size());//pass items and number of visibles iteams
 
@@ -271,6 +271,8 @@ public class HomeFragment extends Fragment {
 
 
     private void loadPreferences(){
+        circleMenu.setFirstChildPosition(CircleMenu.FirstChildPosition.NORTH);
+
         if(Tools.getSharePref(getActivity(), MainActivity.PREF_ROTATION).compareTo("") == 0) {
             circleMenu.setRotating(false);//enable rotation
         }else {
@@ -302,6 +304,14 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         Log.i("CRUGA-EVENT", "HomeFragment-OnResumen");
         super.onResume();
+    }
+
+    public CircleMenu getCircleMenu() {
+        return circleMenu;
+    }
+
+    public void setItemsCircleMenu(ArrayList<App> customApps){
+        circleMenu.setItems(customApps, customApps.size());//pass items and number of visibles iteams
     }
 
 }

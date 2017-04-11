@@ -34,4 +34,10 @@
     <string name="about_launcher_play">About Launcher Play</string>
     <string name="about_launcher_play_text">Know about Launcher Play</string>
     <string name="about">Launcher Play</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="remove_this_app">Remove this app</string>
+    <string name="app_info">App info</string>
+    <string name="go_to_app_info">Go to app settings info</string>
+    <string name="add_to_circle_menu">Add to Menu</string>
+    <string name="add_to_circle_menu_long">Add this app to Circle Menu</string>
 </resources>
