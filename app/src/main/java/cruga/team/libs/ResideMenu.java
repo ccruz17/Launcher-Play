@@ -403,7 +403,11 @@ public class ResideMenu extends FrameLayout {
         disabledSwipeDirection.add(direction);
     }
 
-    private boolean isInDisableDirection(int direction) {
+    public void removeSwipeDirectionDisable(int direction) {
+        disabledSwipeDirection.remove(direction);
+    }
+
+    public boolean isInDisableDirection(int direction) {
         return disabledSwipeDirection.contains(direction);
     }
 

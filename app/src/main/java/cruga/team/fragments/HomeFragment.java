@@ -305,11 +305,19 @@ public class HomeFragment extends Fragment {
     private void loadPreferences(){
 
         circleMenu.setFirstChildPosition(CircleMenu.FirstChildPosition.NORTH);
-
         if(parentActivity.getSharedPref().getString(MainActivity.PREF_ROTATION, "").compareTo("") == 0) {
             circleMenu.setRotating(false);//enable rotation
+
+            if(resideMenu.isInDisableDirection(ResideMenu.DIRECTION_LEFT)) {
+                resideMenu.removeSwipeDirectionDisable(ResideMenu.DIRECTION_LEFT);
+            }
+            if(resideMenu.isInDisableDirection(ResideMenu.DIRECTION_RIGHT)) {
+                resideMenu.removeSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
+            }
         }else {
             circleMenu.setRotating(true);//enable rotation
+            resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
+            resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_LEFT);
         }
 
         if(parentActivity.getSharedPref().getString(MainActivity.PREF_SIZE_ICON, "").compareTo("") == 0) {

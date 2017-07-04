@@ -125,8 +125,6 @@ public class MainActivity extends BaseActivity {
         //resideMenu.setBackground(R.drawable.menu_background);
         resideMenu.attachToActivity(this);
         resideMenu.setScaleValue(0.7f);
-        resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
-        resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_LEFT);
         //Load Pref
 
         mSecurePrefs = getSharedPref();
@@ -222,13 +220,8 @@ public class MainActivity extends BaseActivity {
         final HomeFragment currentFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if(currentFragment != null) {
             if (currentFragment.getCircleMenu() != null) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        currentFragment.setItemsCircleMenu(customApps);
-                        currentFragment.updateOnClickListener();
-
-                    }
-                }).start();
+                currentFragment.setItemsCircleMenu(customApps);
+                currentFragment.updateOnClickListener();
             }
         }
 
