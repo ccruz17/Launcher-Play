@@ -1,27 +1,18 @@
 package cruga.team.launcher_play;
 
-import android.app.Activity;
 import android.app.Application;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
+import com.securepreferences.SecurePreferences;
+import com.tozny.crypto.android.AesCbcWithIntegrity;
+
 import org.solovyev.android.checkout.Billing;
-import org.solovyev.android.checkout.Cache;
-import org.solovyev.android.checkout.Checkout;
-import org.solovyev.android.checkout.Inventory;
-import org.solovyev.android.checkout.Products;
-import org.solovyev.android.checkout.RobotmediaDatabase;
-import org.solovyev.android.checkout.RobotmediaInventory;
 
-import java.util.concurrent.Executor;
-
-import static java.util.Arrays.asList;
-import static org.solovyev.android.checkout.ProductTypes.IN_APP;
-import static android.content.Intent.ACTION_VIEW;
-
+import java.security.GeneralSecurityException;
 
 /**
  * Created by christian on 15/08/16.
@@ -32,6 +23,11 @@ public class CheckoutApplication extends Application {
      */
 
     static final String MAIL = "mundo.iux17@gmail.com";
+    private static final String TAG = "CRUGA_SECURE";
+
+    private SecurePreferences mSecurePrefs;
+    private SecurePreferences mUserPrefs;
+
 
     private final Billing billing = new Billing(this, new Billing.DefaultConfiguration() {
         @Override
@@ -39,6 +35,7 @@ public class CheckoutApplication extends Application {
             final String s = MainActivity.API_KEY;
             return fromX(s, MAIL);
         }
+        /*
 
         @Override
         public Cache getCache() {
@@ -53,8 +50,12 @@ public class CheckoutApplication extends Application {
                 return null;
             }
         }
+        */
 
     });
+
+    private static CheckoutApplication sInstance;
+
 
     /**
      * Method deciphers previously ciphered message
@@ -97,10 +98,74 @@ public class CheckoutApplication extends Application {
         return new String(result);
     }
 
+    public CheckoutApplication() {
+        super();
+        sInstance = this;
+    }
+
+    public static CheckoutApplication get() {
+        return sInstance;
+    }
+
+    public Billing getBilling() {
+        return billing;
+    }
+
+    /**
+     * Single point for the app to get the secure prefs object
+     * @return
+     */
+    public SharedPreferences getSharedPreferences() {
+        if(mSecurePrefs==null){
+            mSecurePrefs = new SecurePreferences(this, "", "my_prefs.xml");
+            SecurePreferences.setLoggingEnabled(true);
+        }
+        return mSecurePrefs;
+    }
+
+
+    /**
+     * This is just an example of how you might want to create your own key with less iterations 1,000 rather than default 10,000. This makes it quicker but less secure.
+     * @return
+     */
+    public SharedPreferences getSharedPreferences1000() {
+        try {
+            AesCbcWithIntegrity.SecretKeys myKey = AesCbcWithIntegrity.generateKeyFromPassword(Build.SERIAL,AesCbcWithIntegrity.generateSalt(),1000);
+            return new SecurePreferences(this, myKey, "my_prefs_1000.xml");
+        } catch (GeneralSecurityException e) {
+            Log.e(TAG, "Failed to create custom key for SecurePreferences", e);
+        }
+        return null;
+    }
+
+    public SharedPreferences getDefaultSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
+
+    public SecurePreferences getUserPinBasedSharedPreferences(String password){
+        if(mUserPrefs==null) {
+            mUserPrefs = new SecurePreferences(this, password, "user_prefs.xml");
+        }
+        return mUserPrefs;
+    }
+
+    public boolean changeUserPrefPassword(String newPassword){
+        if(mUserPrefs!=null){
+            try {
+                mUserPrefs.handlePasswordChange(newPassword, this);
+                return true;
+            } catch (GeneralSecurityException e) {
+                Log.e(TAG, "Error during password change", e);
+            }
+        }
+        return false;
+    }
+
     /**
      * Application wide {@link org.solovyev.android.checkout.Checkout} instance (can be used anywhere in the app).
      * This instance contains all available products in the app.
-     */
+     *
     private final Checkout checkout = Checkout.forApplication(
             billing,
             Products.create().add(IN_APP, asList(MainActivity.BILLING_BEER, MainActivity.BILLING_COFFEE, MainActivity.BILLING_EXCLUSIVE_FEATURES, MainActivity.BILLING_TICKET))
@@ -129,5 +194,5 @@ public class CheckoutApplication extends Application {
         }
         return false;
     }
-
+    */
 }

@@ -30,7 +30,6 @@ public class AppsFragment extends Fragment {
 
         ls.setAdapter(new AppsAdapter(getActivity(), parent.getAllApps()));
 
-
         ResideMenu resideMenu = parent.getResideMenu();
 
         LinearLayout ignored_view = (LinearLayout) rootView.findViewById(R.id.fragment_ignore);

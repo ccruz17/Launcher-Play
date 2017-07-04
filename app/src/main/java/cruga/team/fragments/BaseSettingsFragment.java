@@ -22,13 +22,13 @@ public class BaseSettingsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        checkout = ((BaseActivity) activity).getCheckout();
+        //checkout = ((BaseActivity) activity).getCheckout();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inventory = checkout.loadInventory();
+        //inventory = checkout.loadInventory();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class BaseSettingsFragment extends Fragment {
         BaseActivity myBase;
         if (context instanceof Activity) {
             myBase = (BaseActivity) context;
-            checkout = myBase.getCheckout();
+         //   checkout = myBase.getCheckout();
         }
     }
 }

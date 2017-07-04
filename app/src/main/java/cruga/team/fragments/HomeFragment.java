@@ -4,9 +4,13 @@ package cruga.team.fragments;
  * Created by christian on 12/07/16.
  */
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -14,12 +18,14 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.arlib.floatingsearchview.FloatingSearchView;
@@ -27,6 +33,7 @@ import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cruga.team.clases.SortApps;
 import cruga.team.libs.CircleMenu;
@@ -48,15 +55,17 @@ public class HomeFragment extends Fragment {
     FloatingSearchView mSearchView;
     private String GoogleQuery = "";
     MainActivity parentActivity;
+    MenuItem mActionVoice;
+    private SharedPreferences mSecurePrefs;
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == resultCode) {
-            ArrayList<String> matches = data
-                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            //mSearchView.populateEditText(matches);
+        if (requestCode == 0 && resultCode == -1) {
+            ArrayList<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            mSearchView.setSearchFocused(true);
+            mSearchView.setSearchText(results.get(0));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -74,17 +83,18 @@ public class HomeFragment extends Fragment {
 
         parentActivity = (MainActivity)getActivity();
         //Get customApps
-        customApps = parentActivity.getCustomApps();
-
+        //CCG customApps = Tools.obtenerCustomApps(getActivity());
         //GET MENU
         resideMenu = parentActivity.getResideMenu();
 
-
         circleMenu = (CircleMenu) rootView.findViewById(R.id.circle_menu_items);
-        setting_home = (ImageView) rootView.findViewById(R.id.settings_home);
-
         loadPreferences();
-        circleMenu.setItems(customApps, customApps.size());//pass items and number of visibles iteams
+        parentActivity.getAppsAndUpdateMenuLeft();
+
+        setting_home = (ImageView) rootView.findViewById(R.id.settings_home);
+        mSecurePrefs = parentActivity.getSharedPref();
+
+        //CCG - circleMenu.setItems(customApps, customApps.size());//pass items and number of visibles iteams
 
         setting_home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,16 +117,21 @@ public class HomeFragment extends Fragment {
             }
         });*/
 
+        /*
         circleMenu.setOnItemClickListener(new CircleMenu.OnItemClickListener() {
 
             @Override
             public void onItemClick(CircleMenu.ItemView view) {
                 App currentApp  = customApps.get(view.getIdx());
-                Intent intent = new Intent(Intent.ACTION_MAIN);
+
+                PackageManager pm = parentActivity.getPackageManager();
+                Intent intent = pm.getLaunchIntentForPackage(currentApp.packageName);
+
                 intent.setComponent(new ComponentName(currentApp.packageName, currentApp.activity));
                 getActivity().startActivity(intent);
             }
         });
+        */
 
         FrameLayout ignored_view = (FrameLayout) rootView.findViewById(R.id.fragment_ignore);
         resideMenu.addIgnoredView(ignored_view);
@@ -266,32 +281,49 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        mActionVoice = (MenuItem) rootView.findViewById(R.id.action_voice_rec);
+
+        mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+            @Override
+            public void onActionMenuItemSelected(MenuItem item) {
+                if(checkVoiceRecognition(getActivity())) {
+                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    //... put other settings in the Intent
+                    startActivityForResult(intent, 0);
+                } else {
+
+                }
+            }
+        });
+
         return rootView;
     }
 
 
     private void loadPreferences(){
+
         circleMenu.setFirstChildPosition(CircleMenu.FirstChildPosition.NORTH);
 
-        if(Tools.getSharePref(getActivity(), MainActivity.PREF_ROTATION).compareTo("") == 0) {
+        if(parentActivity.getSharedPref().getString(MainActivity.PREF_ROTATION, "").compareTo("") == 0) {
             circleMenu.setRotating(false);//enable rotation
         }else {
             circleMenu.setRotating(true);//enable rotation
         }
 
-        if(Tools.getSharePref(getActivity(), MainActivity.PREF_SIZE_ICON).compareTo("") == 0) {
+        if(parentActivity.getSharedPref().getString(MainActivity.PREF_SIZE_ICON, "").compareTo("") == 0) {
             circleMenu.setIconSize(MainActivity.ICON_SIZES[1]);
         }else {
-            int pos = Integer.parseInt(Tools.getSharePref(getActivity(), MainActivity.PREF_SIZE_ICON));
+            int pos = Integer.parseInt(parentActivity.getSharedPref().getString(MainActivity.PREF_SIZE_ICON, "1"));
             circleMenu.setIconSize(MainActivity.ICON_SIZES[pos]);
         }
 
-        if(Tools.getSharePref(getActivity(), MainActivity.PREF_SHOW_FONT).compareTo("") == 0) {
+        if(parentActivity.getSharedPref().getString(MainActivity.PREF_SHOW_FONT, "").compareTo("") == 0) {
             circleMenu.setShowFont(false);
         }else {
             circleMenu.setShowFont(true);
         }
-
     }
 
     @Override
@@ -311,7 +343,36 @@ public class HomeFragment extends Fragment {
     }
 
     public void setItemsCircleMenu(ArrayList<App> customApps){
-        circleMenu.setItems(customApps, customApps.size());//pass items and number of visibles iteams
+        this.customApps = customApps;
+        circleMenu.setItems(customApps, customApps.size());
     }
 
+    public ArrayList<App> getItemsCircleManu(){
+        return customApps;
+    }
+
+    public boolean checkVoiceRecognition(Activity act) {
+        // Check if voice recognition is present
+        PackageManager pm = act.getPackageManager();
+        List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(
+                RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+        if (activities.size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public void updateOnClickListener() {
+        circleMenu.setOnItemClickListener(new CircleMenu.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(CircleMenu.ItemView view) {
+                App currentApp  = customApps.get(view.getIdx());
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setComponent(new ComponentName(currentApp.packageName, currentApp.activity));
+                getActivity().startActivity(intent);
+            }
+        });
+
+    }
 }

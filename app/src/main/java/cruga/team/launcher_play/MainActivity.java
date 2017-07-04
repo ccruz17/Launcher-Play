@@ -1,10 +1,12 @@
 package cruga.team.launcher_play;
 
+import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,13 +18,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-
-import com.arlib.floatingsearchview.FloatingSearchView;
 import com.nightonke.boommenu.BoomMenuButton;
 
 import cruga.team.fragments.HomeFragment;
 import cruga.team.fragments.PreferenceFragment;
-import cruga.team.libs.CircleMenu;
 import cruga.team.listeners.IconClickListener;
 import cruga.team.libs.ResideMenu;
 import cruga.team.libs.ResideMenuItem;
@@ -34,7 +33,6 @@ import java.util.List;
 
 import cruga.team.clases.App;
 import cruga.team.clases.Tools;
-import cruga.team.listeners.LongClickSideMenuItemListener;
 import cruga.team.listeners.MenuIconPackListener;
 import cruga.team.listeners.MenuSettingsListener;
 import cruga.team.listeners.MenuWallpaperListener;
@@ -82,9 +80,11 @@ public class MainActivity extends BaseActivity {
     public ArrayList<App> allApps = null;
     public ArrayList<App> customApps = null;
     private ResideMenu resideMenu;
-    private FloatingSearchView mSearchView;
     private IntentFilter filter = null;
     private BoomMenuButton bmb = null;
+    private Activity act;
+    private Context context;
+    private SharedPreferences mSecurePrefs;
 
 
     @Override
@@ -118,7 +118,8 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_layout);
-
+        act = this;
+        context = this;
         // attach to current activity;
         resideMenu = new ResideMenu(this);
         //resideMenu.setBackground(R.drawable.menu_background);
@@ -126,8 +127,11 @@ public class MainActivity extends BaseActivity {
         resideMenu.setScaleValue(0.7f);
         resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
         resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_LEFT);
+        //Load Pref
 
-        if(Tools.getSharePref(this, PREF_3D_ANIMATION).compareTo("") == 0) {
+        mSecurePrefs = getSharedPref();
+
+        if(mSecurePrefs.getString(PREF_3D_ANIMATION, "").compareTo("") == 0) {
             resideMenu.setUse3D(false);
         } else {
             resideMenu.setUse3D(true);
@@ -135,10 +139,12 @@ public class MainActivity extends BaseActivity {
 
         final PackageManager pm = getPackageManager();
         //get a list of installed apps and update Menu Left.
-        getAppsAndUpdateMenuLeft();
+        Log.i("CRUGA-EVENT", "OnCreate");
+        //getAppsAndUpdateMenuLeft();
+        resideMenu.setMenuListener(menuListener);
+
         //set Menu Settings
         setMenuRight();
-        resideMenu.setMenuListener(menuListener);
 
         if( savedInstanceState == null )
             changeFragment(new HomeFragment());
@@ -191,11 +197,6 @@ public class MainActivity extends BaseActivity {
         return customApps;
     }
 
-
-    public FloatingSearchView getSearchView() {
-        return mSearchView;
-    }
-
     private void setMenuRight() {
         //Add Settings Listeners and Item
         ResideMenuItem settings = new ResideMenuItem(this, R.drawable.ic_settings_white_48dp, getString(R.string.settings));
@@ -214,9 +215,24 @@ public class MainActivity extends BaseActivity {
     }
 
     public void getAppsAndUpdateMenuLeft() {
+        Log.i("CCG-Function", "GetUpdateLeft");
         allApps = Tools.obtenerApps(this, this);
-        final List<ResideMenuItem> itemApps = new ArrayList<>();
+        customApps = Tools.obtenerCustomApps(this);
 
+        final HomeFragment currentFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if(currentFragment != null) {
+            if (currentFragment.getCircleMenu() != null) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        currentFragment.setItemsCircleMenu(customApps);
+                        currentFragment.updateOnClickListener();
+
+                    }
+                }).start();
+            }
+        }
+
+        final List<ResideMenuItem> itemApps = new ArrayList<>();
         for (int i = 0; i < allApps.size(); i++){
 
             String lbl = allApps.get(i).label;
@@ -225,25 +241,31 @@ public class MainActivity extends BaseActivity {
             final Drawable ic = allApps.get(i).icono;
 
 
-            ResideMenuItem itemMenuReside = new ResideMenuItem(ic, lbl, packagename, appactivity, this);
+            final ResideMenuItem itemMenuReside = new ResideMenuItem(ic, lbl, packagename, appactivity, act, context);
             itemMenuReside.setOnClickListener(new IconClickListener(this, allApps.get(i)));
-            itemMenuReside.setOnLongClickListener(new LongClickSideMenuItemListener(this, itemMenuReside.getBoomMenu()));
+
+            itemMenuReside.loadBmbMenu(context, act);
+
+            itemMenuReside.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    final BoomMenuButton bmbCustom = itemMenuReside.getBoomMenu();
+                    bmbCustom.boom();
+                    bmb = bmbCustom;
+                    //bmb.boom();
+                    setTitle("FlottingtMenu");
+                    return true;
+                }
+            });
             itemApps.add(itemMenuReside);
         }
         resideMenu.setMenuItems(itemApps, ResideMenu.DIRECTION_LEFT);
-        customApps = Tools.obtenerCustomApps(this);
-
-        HomeFragment currentFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if(currentFragment != null) {
-            if (currentFragment.getCircleMenu() != null) {
-                currentFragment.setItemsCircleMenu(customApps);
-            }
-        }
+        Log.i("CCG-Function", "END-GetUpdateLeft");
     }
 
     @Override
     public void onStop() {
-        unregisterReceiver(addApp);
+        //unregisterReceiver(addApp);
         super.onStop();
     }
 
@@ -259,14 +281,13 @@ public class MainActivity extends BaseActivity {
 
         addApp = new AddAppBroadCastReceiver();
         registerReceiver(addApp, filter);
-
-        Log.i("GRUGA_EVENT", "OnStart");
+        Log.i("GRUGA_EVENT", "OnStartActivity");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.i("GRUGA_EVENT", "OnRestart");
+        Log.i("GRUGA_EVENT", "OnRestartActivity");
     }
 
     @Override
@@ -278,7 +299,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("GRUGA_EVENT", "OnResumenAct");
+        Log.i("GRUGA_EVENT", "OnResumenActivity");
         Log.i("TITLE", getTitle().toString() + "");
         if(getTitle() == TITLE_MENU_SETTINGS && MainActivity.HOME_PRESS) {
             changeFragment(new HomeFragment());
@@ -319,15 +340,34 @@ public class MainActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public class AddAppBroadCastReceiver extends BroadcastReceiver {
+    public SharedPreferences getSharedPref(){
+        if(mSecurePrefs==null){
+            mSecurePrefs = CheckoutApplication.get().getSharedPreferences();
+        }
+        return mSecurePrefs;
+    }
 
+    public class AddAppBroadCastReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i("EVENT", "onReciver");
             //update apps and preferences for apps
             getAppsAndUpdateMenuLeft();
-            changeFragment(new HomeFragment());
+
+            final HomeFragment currentFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if(currentFragment != null) {
+                if (currentFragment.getCircleMenu() != null) {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            currentFragment.setItemsCircleMenu(customApps);
+                            currentFragment.updateOnClickListener();
+
+                        }
+                    }).start();
+                }
+            }
+
             setTitle(MainActivity.TITLE_HOME);
 
         }

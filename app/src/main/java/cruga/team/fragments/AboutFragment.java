@@ -29,7 +29,7 @@ public class AboutFragment extends Fragment {
         }
 
         Element versionElement = new Element();
-        versionElement.setTitle("Version 1.4");
+        versionElement.setTitle("Version 1.5");
 
         getActivity().setTitle("title_about");
         View aboutPage = new AboutPage(getActivity())

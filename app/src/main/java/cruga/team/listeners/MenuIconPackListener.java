@@ -110,8 +110,8 @@ public class MenuIconPackListener implements View.OnClickListener {
                             dialog.dismiss();
 
                         }else {
-                            Tools t = new Tools();
-                            t.setSharePref(mainActivity, MainActivity.PREF_ICON_PACK, themesInstalled.get(position).packageName);
+
+                            mainActivity.getSharedPref().edit().putString(MainActivity.PREF_ICON_PACK, themesInstalled.get(position).packageName).commit();
 
                             resideMenu.clearIgnoredViewList();
                             mainActivity.getSupportFragmentManager()

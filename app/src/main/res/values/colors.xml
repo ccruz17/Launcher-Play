@@ -15,5 +15,6 @@
     <color name="blue_info">#2196F3</color>
     <color name="red_uninstall">#F44336</color>
     <color name="green_add">#009688</color>
+    <color name="amber_remove">#FFC107</color>
 
 </resources>

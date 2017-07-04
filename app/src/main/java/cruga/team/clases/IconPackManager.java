@@ -381,7 +381,6 @@ public class IconPackManager
                 {
                     ai = pm.getApplicationInfo(ip.packageName, PackageManager.GET_META_DATA);
                     ip.name  = mContext.getPackageManager().getApplicationLabel(ai).toString();
-                    Log.i("CRUGA", ip.packageName);
                     iconPacks.put(ip.packageName, ip);
                 }
                 catch (PackageManager.NameNotFoundException e)

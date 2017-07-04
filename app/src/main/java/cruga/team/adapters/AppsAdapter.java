@@ -1,6 +1,7 @@
 package cruga.team.adapters;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,9 @@ public class AppsAdapter extends BaseAdapter {
     public AppsAdapter(Activity activity, ArrayList<App> apps) {
         this.apps = apps;
         acti = activity;
-        mySet = Tools.getSharePrefset(acti, MainActivity.PREF_CUSTOM_APPS);
+        MainActivity mA = (MainActivity) activity ;
+
+        mySet = mA.getSharedPref().getStringSet(MainActivity.PREF_CUSTOM_APPS, null);
     }
 
     @Override

@@ -30,19 +30,18 @@ public class Tools {
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         List<ResolveInfo> pacsList = pm.queryIntentActivities(mainIntent, 0);
         ArrayList<App> apps = new ArrayList<App>();
+        MainActivity parentActiviyt = (MainActivity) mActivity;
 
         IconPackManager iP = new IconPackManager();
         iP.setContext(mContext);
         iP.setActivity(mActivity);
         HashMap<String, IconPack> map = iP.getAvailableIconPacks(true);
-        String theme = getSharePref(mActivity, MainActivity.PREF_ICON_PACK);
+        String theme = parentActiviyt.getSharedPref().getString(MainActivity.PREF_ICON_PACK, "");
         if(map.size()>0) {
             if(map.containsKey(theme)) {
                 map.get(theme).load();
             }
         }
-
-        Log.i("THEME-SIZE", map.size() + "*");
 
         for(int i=0;i<pacsList.size();i++){
             App appMomento = new App();
@@ -79,7 +78,10 @@ public class Tools {
         apps = obtenerApps(act, act.getApplicationContext());
         ArrayList<App> tmpApps = new ArrayList<App>();
 
-        Set<String> mySet = getSharePrefset(act, MainActivity.PREF_CUSTOM_APPS);
+        //Set<String> mySet = getSharePrefset(act, MainActivity.PREF_CUSTOM_APPS);
+        MainActivity parentActivity = (MainActivity)act;
+
+        Set<String> mySet = parentActivity.getSharedPref().getStringSet(MainActivity.PREF_CUSTOM_APPS, null);
         if(mySet != null) {
             Iterator iter = mySet.iterator();
 
@@ -134,7 +136,7 @@ public class Tools {
                     tmpApps.add(apps.get(i));
                     mySet.add(apps.get(i).activity);
                 }
-                Tools.setSharePref(act, MainActivity.PREF_CUSTOM_APPS, mySet);
+                parentActivity.getSharedPref().edit().putStringSet(MainActivity.PREF_CUSTOM_APPS, mySet).commit();
             }
         }
 
@@ -150,6 +152,9 @@ public class Tools {
         return tmpApps;
     }
 
+
+
+/*
     public static String getSharePref(Activity act, String name) {
         SharedPreferences prefs =  act.getSharedPreferences(MainActivity.PREFERENCE_KEY, act.MODE_PRIVATE);
         String pref = prefs.getString(name, "");
@@ -171,5 +176,5 @@ public class Tools {
         SharedPreferences prefs =  act.getSharedPreferences(MainActivity.PREFERENCE_KEY, act.MODE_PRIVATE);
         prefs.edit().putStringSet(name, val).commit();
     }
-
+    */
 }

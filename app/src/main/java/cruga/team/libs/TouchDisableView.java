@@ -64,7 +64,6 @@ class TouchDisableView extends ViewGroup {
     }
 
     void setTouchDisable(boolean disableTouch) {
-        Log.i("CCG", "setTouchDisable");
         mTouchDisabled = disableTouch;
     }
 
