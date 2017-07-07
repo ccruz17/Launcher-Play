@@ -29,8 +29,10 @@ public class Tools {
         Intent mainIntent = new Intent(Intent.ACTION_MAIN,null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         List<ResolveInfo> pacsList = pm.queryIntentActivities(mainIntent, 0);
+
         ArrayList<App> apps = new ArrayList<App>();
         MainActivity parentActiviyt = (MainActivity) mActivity;
+
 
         IconPackManager iP = new IconPackManager();
         iP.setContext(mContext);
@@ -72,10 +74,8 @@ public class Tools {
         return apps;
     }
 
-    public static ArrayList<App> obtenerCustomApps(Activity act) {
+    public static ArrayList<App> obtenerCustomApps(Activity act, ArrayList<App> apps) {
 
-        ArrayList<App> apps = new ArrayList<App>();
-        apps = obtenerApps(act, act.getApplicationContext());
         ArrayList<App> tmpApps = new ArrayList<App>();
 
         //Set<String> mySet = getSharePrefset(act, MainActivity.PREF_CUSTOM_APPS);

@@ -89,7 +89,7 @@ public class ResideMenuItem extends LinearLayout{
         bmb.setOrderEnum(OrderEnum.DEFAULT);
         bmb.setShowMoveEaseEnum(EaseEnum.EaseOutBack);
 
-        Rect padding = new Rect();
+        final Rect padding = new Rect();
         padding.bottom = 40;
         padding.top = 40;
         padding.right = 40;
@@ -122,11 +122,11 @@ public class ResideMenuItem extends LinearLayout{
                                 if (currentFragment.getCircleMenu() != null) {
 
                                     Set<String> appsPref  = parentActivity.getSharedPref().getStringSet(MainActivity.PREF_CUSTOM_APPS, null);
-
                                     appsPref.remove(appActivity);
                                     parentActivity.getSharedPref().edit().putStringSet(MainActivity.PREF_CUSTOM_APPS, appsPref).commit();
+
                                     //Tools.setSharePref(act, MainActivity.PREF_CUSTOM_APPS, appsPreferences);
-                                    ArrayList<App> customApps = Tools.obtenerCustomApps(act);
+                                    ArrayList<App> customApps = Tools.obtenerCustomApps(act, parentActivity.allApps);
                                     currentFragment.setItemsCircleMenu(customApps);
                                     currentFragment.updateOnClickListener();
                                     loadBmbMenu(context, act);
@@ -153,7 +153,7 @@ public class ResideMenuItem extends LinearLayout{
                                     parentActivity.getSharedPref().edit().putStringSet(MainActivity.PREF_CUSTOM_APPS, appsPref).commit();
                                     Log.i("CCG", "Remove");
                                     //Tools.setSharePref(act, MainActivity.PREF_CUSTOM_APPS, appsPreferences);
-                                    ArrayList<App> customApps = Tools.obtenerCustomApps(act);
+                                    ArrayList<App> customApps = Tools.obtenerCustomApps(act, parentActivity.allApps);
                                     currentFragment.setItemsCircleMenu(customApps);
                                     currentFragment.updateOnClickListener();
                                     loadBmbMenu(context, act);
@@ -176,6 +176,7 @@ public class ResideMenuItem extends LinearLayout{
                     @Override
                     public void onBoomButtonClick(int index) {
                         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.setData(Uri.parse("package:" + packagename));
                         intent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
                         act.setTitle(MainActivity.TITLE_ALL_APSS);
@@ -237,5 +238,8 @@ public class ResideMenuItem extends LinearLayout{
         return bmb;
     }
 
+    public String getPackagename() {
+        return packagename;
+    }
 
 }

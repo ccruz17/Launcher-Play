@@ -40,7 +40,6 @@ import cruga.team.libs.CircleMenu;
 import cruga.team.libs.ResideMenu;
 
 import cruga.team.clases.App;
-import cruga.team.clases.Tools;
 import cruga.team.launcher_play.MainActivity;
 import cruga.team.launcher_play.R;
 
@@ -51,7 +50,6 @@ public class HomeFragment extends Fragment {
     public static CircleMenu circleMenu;
     public static ImageView setting_home = null;
     public static ArrayList<App> customApps = null;
-    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1023;
     FloatingSearchView mSearchView;
     private String GoogleQuery = "";
     MainActivity parentActivity;
@@ -89,7 +87,7 @@ public class HomeFragment extends Fragment {
 
         circleMenu = (CircleMenu) rootView.findViewById(R.id.circle_menu_items);
         loadPreferences();
-        parentActivity.getAppsAndUpdateMenuLeft();
+        parentActivity.updateCustomApps();
 
         setting_home = (ImageView) rootView.findViewById(R.id.settings_home);
         mSecurePrefs = parentActivity.getSharedPref();
@@ -149,9 +147,6 @@ public class HomeFragment extends Fragment {
         getActivity().setTitle(MainActivity.TITLE_HOME);
         mSearchView = (FloatingSearchView) rootView.findViewById(R.id.floating_search_view);
 
-        final ArrayList<App> myApps = SortApps.ordenar_alfabeticamente(parentActivity.getAllApps());
-
-
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, final String newQuery) {
@@ -164,13 +159,13 @@ public class HomeFragment extends Fragment {
                     mSearchView.clearSuggestions();
 
                     App unique = null;
-                    for(int i = 0; i<myApps.size(); i++) {
-                        final String name = myApps.get(i).label;
+                    for(int i = 0; i<parentActivity.getAllApps().size(); i++) {
+                        final String name = parentActivity.getAllApps().get(i).label;
                         String rgx = "(?i).*" +myQuery+".*";
                         final int idx = i;
                         if(name.matches(rgx)) {
 
-                            unique = myApps.get(i);
+                            unique = parentActivity.getAllApps().get(i);
                             //pass them on to the search view
                             SearchSuggestion sug = new SearchSuggestion() {
                                 @Override
@@ -240,7 +235,7 @@ public class HomeFragment extends Fragment {
                 } else {
                     mSearchView.clearSearchFocus();
                     Intent intent = new Intent(Intent.ACTION_MAIN);
-                    intent.setComponent(new ComponentName(myApps.get(searchSuggestion.describeContents()).packageName, myApps.get(searchSuggestion.describeContents()).activity));
+                    intent.setComponent(new ComponentName(parentActivity.getAllApps().get(searchSuggestion.describeContents()).packageName, parentActivity.getAllApps().get(searchSuggestion.describeContents()).activity));
                     getActivity().startActivity(intent);
                 }
             }
@@ -263,7 +258,7 @@ public class HomeFragment extends Fragment {
                     leftIcon.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.google_search));
                     textView.setTextColor(getResources().getColor(R.color.cardview_dark_background));
                 } else {
-                    leftIcon.setImageDrawable(myApps.get(item.describeContents()).icono);
+                    leftIcon.setImageDrawable(parentActivity.getAllApps().get(item.describeContents()).icono);
                     textView.setTextColor(getResources().getColor(R.color.cardview_dark_background));
                 }
             }
