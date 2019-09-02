@@ -371,7 +371,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(CircleMenu.ItemView view) {
                 App currentApp  = customApps.get(view.getIdx());
-                Intent intent = new Intent(Intent.ACTION_MAIN);
+                Intent intent =  parentActivity.getPackageManager().getLaunchIntentForPackage(currentApp.packageName);
                 intent.setComponent(new ComponentName(currentApp.packageName, currentApp.activity));
                 getActivity().startActivity(intent);
             }

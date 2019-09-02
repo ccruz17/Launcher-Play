@@ -10,6 +10,9 @@
     <color name="darker_gray">#9b9b9b</color>
     <color name="lines">#dd1e1e1e</color>
     <color name="overlay_light">#F8F8F8</color>
+    <color name="transparent">#00000000</color>
+    <color name="cardview_dark_background">#DF000000</color>
+    <color name="black">#000000</color>
 
 
     <color name="blue_info">#2196F3</color>

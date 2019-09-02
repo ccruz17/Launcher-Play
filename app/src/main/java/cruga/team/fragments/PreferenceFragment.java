@@ -181,38 +181,16 @@ public class PreferenceFragment extends BaseSettingsFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onDestroy() {
         mCheckout.destroyPurchaseFlow();
         super.onDestroy();
         Log.i("CRUGA-EVENT", "onDestroyPreferencesFragment");
     }
-
-    /*
-    private class PurchaseListener extends BaseRequestListener<Purchase> {
-        @Override
-        public void onSuccess(Purchase purchase) {
-            onPurchased();
-            Log.i("CRUGA-EVENT", "onSuccessPurchase");
-
-        }
-
-        private void onPurchased() {
-            // let's update purchase information in local inventory
-            inventory.load().whenLoaded(new InventoryLoadedListener());
-            updateViews();
-        }
-
-        @Override
-        public void onError(int response, Exception e) {
-            // it is possible that our data is not synchronized with data on Google Play => need to handle some errors
-            if (response == ResponseCodes.ITEM_ALREADY_OWNED) {
-                onPurchased();
-            } else {
-                super.onError(response, e);
-            }
-            Log.i("CRUGA", "onErrrorPurchase");
-        }
-    }*/
 
 
     private void sendBuy(Sku sku, String token) {
@@ -227,6 +205,7 @@ public class PreferenceFragment extends BaseSettingsFragment {
         Inventory.Product mProduct = Inventory.Products.empty().get(ProductTypes.IN_APP);
 
         final Purchase purchase = mProduct.getPurchaseInState(sku, Purchase.State.PURCHASED);
+
         if (token == null) {
             Log.i("CCG", "Go to Purchase");
             purchase(sku);
@@ -234,7 +213,6 @@ public class PreferenceFragment extends BaseSettingsFragment {
             Log.i("CCG", "Go to Consume");
             consume(purchase);
             Log.i("CCG", "Go to reload");
-            reloadInventory();
         }
     }
 
@@ -280,6 +258,7 @@ public class PreferenceFragment extends BaseSettingsFragment {
                 Log.i("CCG", e.getMessage() + "");
                 reloadInventory();
             }
+
         };
     }
 
@@ -294,7 +273,6 @@ public class PreferenceFragment extends BaseSettingsFragment {
     }
 
     private void purchase(final Sku sku) {
-
         final RequestListener<Purchase> listener = makeRequestListener();
         mCheckout.startPurchaseFlow(sku, null, listener);
 
@@ -320,13 +298,15 @@ public class PreferenceFragment extends BaseSettingsFragment {
 
                 for (Sku sku : product.getSkus()) {
                     final Purchase purchase = product.getPurchaseInState(sku, Purchase.State.PURCHASED);
+                    Log.i("CRUGA-PURCHASE", sku.id.toString());
+                    Log.i("CRUGA-PURCHASE", purchase != null ? purchase.token : "NULL");
 
                     if(sku.id.toString().compareTo("inapp/"+MainActivity.BILLING_EXCLUSIVE_FEATURES) == 0) {
-                        sku_premium = sku;
                         token_premium = purchase != null ? purchase.token : null;
+                        sku_premium = sku;
                     }else if(sku.id.toString().compareTo("inapp/"+MainActivity.BILLING_BEER) == 0) {
-                        sku_beer = sku;
                         token_bear = purchase != null ? purchase.token : null;
+                        sku_beer = sku;
                     }else if(sku.id.toString().compareTo("inapp/"+MainActivity.BILLING_COFFEE) == 0) {
                         token_coffee = purchase != null ? purchase.token : null;
                         sku_coffee = sku;
@@ -384,7 +364,6 @@ public class PreferenceFragment extends BaseSettingsFragment {
             @Override
             public void onClick(View v) {
                 sendBuy(sku_coffee, token_coffee);
-
             }
         });
 
@@ -392,6 +371,13 @@ public class PreferenceFragment extends BaseSettingsFragment {
             @Override
             public void onClick(View v) {
                 sendBuy(sku_ticket, token_ticket);
+            }
+        });
+
+        menu_beer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendBuy(sku_beer, token_bear);
             }
         });
 
@@ -408,44 +394,5 @@ public class PreferenceFragment extends BaseSettingsFragment {
             }
         });
 
-        menu_beer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendBuy(sku_beer, token_bear);
-            }
-        });
-
     }
-    /*
-    private abstract class BaseRequestListener<R> implements RequestListener<R> {
-
-        @Override
-        public void onError(int response, Exception e) {
-
-        }
-    }
-
-
-    private class ConsumeListener extends BaseRequestListener<Object> {
-        @Override
-        public void onSuccess(Object result) {
-            onConsumed();
-        }
-
-        private void onConsumed() {
-            inventory.load().whenLoaded(new InventoryLoadedListener());
-            Toast.makeText(getActivity(), "Item consumido", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onError(int response, Exception e) {
-            // it is possible that our data is not synchronized with data on Google Play => need to handle some errors
-            if (response == ResponseCodes.ITEM_NOT_OWNED) {
-                onConsumed();
-            } else {
-                super.onError(response, e);
-            }
-        }
-    }
-    */
 }

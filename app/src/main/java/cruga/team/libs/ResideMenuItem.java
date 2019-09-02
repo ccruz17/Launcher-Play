@@ -176,7 +176,6 @@ public class ResideMenuItem extends LinearLayout{
                     @Override
                     public void onBoomButtonClick(int index) {
                         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.setData(Uri.parse("package:" + packagename));
                         intent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
                         act.setTitle(MainActivity.TITLE_ALL_APSS);

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.0'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 29
         versionCode 18
         versionName "1.92"
     }
@@ -19,11 +19,11 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:23.3.0'
+    compile 'com.android.support:support-v4:26.0.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('/home/christian/GIT/Android/CircleLauncher3D/libs/nineoldandroids-2.4.0.jar')
+    compile files('/home/ccruz/GIT/Android/CircleLauncher3D/libs/nineoldandroids-2.4.0.jar')
     compile 'com.github.rey5137:material:1.2.4'
-    compile 'org.solovyev.android:checkout:1.0.0'
+    compile 'org.solovyev.android:checkout:1.0.1'
     compile 'javax.annotation:jsr250-api:1.0'
     compile 'com.orhanobut:dialogplus:1.11@aar'
     compile 'com.nightonke:boommenu:1.0.9'

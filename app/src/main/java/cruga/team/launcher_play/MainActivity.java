@@ -154,11 +154,13 @@ public class MainActivity extends BaseActivity {
         if( savedInstanceState == null )
             changeFragment(new HomeFragment());
 
-
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addDataScheme("package");
+
+        addApp = new AddAppBroadCastReceiver();
+        registerReceiver(addApp, filter);
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -309,8 +311,6 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         Log.i("GRUGA_EVENT", "OnStartActivity");
-        addApp = new AddAppBroadCastReceiver();
-        registerReceiver(addApp, filter);
     }
 
     @Override
@@ -381,6 +381,8 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i("EVENT", "onReciver");
+            Log.i("EVENT", intent.getDataString());
+            Log.i("EVENT", intent.getAction());
             //update apps and preferences for apps
             getAppsAndUpdateMenuLeft();
 
